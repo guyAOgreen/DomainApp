@@ -1,0 +1,12 @@
+.name {
+    display: flex;
+    align-items: center;
+    font-family: 'Brush Script MT', cursive;
+    height: 180px;
+    font-size: 30px;
+    width: 280px;
+    justify-content: center;
+    color: black;
+    background-image: url("../../assets/gifs/cat.gif");
+    background-size: contain;
+}

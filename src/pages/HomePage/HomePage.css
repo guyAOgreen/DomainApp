@@ -1,0 +1,41 @@
+.container {
+    display: flex;
+    align-items: center;
+}
+
+.image1 {
+    display: block;
+    max-width: 600px;
+    max-height: 600px;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    padding-left: 20px;
+
+}
+.image2 {
+    display: block;
+    max-width: 600px;
+    max-height: 600px;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    padding-left: 20px;
+    
+}
+.image3 {
+    display: block;
+    max-width: 600px;
+    max-height: 600px;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    padding-left: 20px;
+}
+
+.image4 {
+    width: 698px;
+    height: 698px;
+    padding: 10px;
+    padding-left: 20px;
+}
