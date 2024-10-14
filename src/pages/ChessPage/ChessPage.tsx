@@ -35,7 +35,7 @@ const ChessPage = () => {
         if (games?.length > 0) {
             setGamesIds(extractLichessGameIds(games));
         }
-    }, [setGamesIds, games]);
+    }, [games]);
 
 
     if (gamesIds.length === numberOfRecentGamesShown && !loaded) {
