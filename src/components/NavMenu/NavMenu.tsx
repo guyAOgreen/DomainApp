@@ -34,6 +34,13 @@ const NavMenu: React.FC = () => {
           >
             {"CV"}
           </button>
+          <button 
+            onClick={() => handleNavigation("chess")}
+            title='chess'
+            className='button-text button'
+          >
+            {"Chess"}
+          </button>
         </>
       </div>
     </nav>
