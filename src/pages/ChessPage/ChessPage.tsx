@@ -8,6 +8,7 @@ import TabButton from "../../components/Tab/TabButton";
 
 import './ChessPage.css';
 import LinksContent from "../../components/Tab/TabContent/LinksContent";
+import Loader from "../../components/Loader/Loader";
 
 const ChessPage = () => {
     const [games, setGames] = React.useState<String>("");
@@ -21,7 +22,7 @@ const ChessPage = () => {
           try {
             const response = await axios.get(
                 `https://lichess.org/api/games/user/guygreenInClassAtUCT?max=${numberOfRecentGamesShown}`
-            );      
+            );     
             setGames(response.data);
           } catch (error) {
                 console.error("Error fetching games:", error);
@@ -53,9 +54,7 @@ const ChessPage = () => {
                     );
                 } else {
                     return (
-                        <div> 
-                            <p>Loading Page</p>
-                        </div>
+                        <Loader/>
                     );
                 }
 
