@@ -1,8 +1,14 @@
-import React, { ReactNode } from "react";
+import React from "react";
+import type { IconType } from "react-icons";
 import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 
+type SocialIcon = {
+  name: string;
+  href: string;
+  icon: IconType;
+};
 
-export const socialIcons = [
+export const socialIcons: SocialIcon[] = [
   {
     name: "github",
     href: "https://github.com/guyAOgreen",
@@ -23,17 +29,17 @@ export const socialIcons = [
 const SocialLinks: React.FC = () => {
   return (
     <>
-    {socialIcons.map((socialIcon) => {
-            const Icon = socialIcon.icon;
-
-   return (
-     <li key={socialIcon.name}>
+    {socialIcons.map(( { name, href, icon: Icon}) => { 
+      return (
        <a 
+        key={name}
+        href={href}
         className={"text-gray-600 dark:text-gray-300 hover: text-blue-600"} 
-        href={socialIcon.href}>
-            {Icon as unknown as ReactNode}
+        target="_blank" 
+        rel="noopener noreferrer"
+       >
+          <Icon size={24} />
        </a>
-    </li>
    );
 })}
    </>
