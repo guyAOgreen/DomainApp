@@ -29,21 +29,20 @@ export const socialIcons: SocialIcon[] = [
 const SocialLinks: React.FC = () => {
   return (
     <>
-    {socialIcons.map(( { name, href, icon: Icon}) => { 
-      return (
-       <a 
-        key={name}
-        href={href}
-        className={"text-gray-600 dark:text-gray-300 hover:text-blue-600"} 
-        target="_blank" 
-        rel="noopener noreferrer"
-       >
-          <Icon size={24} />
-       </a>
-   );
-})}
-   </>
-
+      {socialIcons.map(({ name, href, icon: Icon }) => {
+        return (
+          <a
+            key={name}
+            href={href}
+            className={"text-gray-600 dark:text-gray-300 hover:text-blue-600"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon size={24} />
+          </a>
+        );
+      })}
+    </>
   );
 };
 

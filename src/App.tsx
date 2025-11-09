@@ -1,12 +1,12 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import NavMenu from './components/NavMenu/NavMenu';
-import HomePage from './pages/HomePage/HomePage';
-import NameComponent from './components/NameComponent/NameComponent';
-import AboutMePage from './pages/AboutMePage/AboutMePage';
-import CvPage from './pages/CVPage/CVPage';
-import ChessPage from './pages/ChessPage/ChessPage';
-import SocialLinks from './components/SocialLinks/SocialLinks';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import NavMenu from "./components/NavMenu/NavMenu";
+import HomePage from "./pages/HomePage/HomePage";
+import NameComponent from "./components/NameComponent/NameComponent";
+import AboutMePage from "./pages/AboutMePage/AboutMePage";
+import CvPage from "./pages/CVPage/CVPage";
+import ChessPage from "./pages/ChessPage/ChessPage";
+import SocialLinks from "./components/SocialLinks/SocialLinks";
 
 const App: React.FC = () => {
   return (
@@ -16,7 +16,7 @@ const App: React.FC = () => {
         <NavMenu />
       </div>
 
-      <main className="p-6 bg-gray-50 dark:bg-gray-900" >
+      <main className="p-6 bg-gray-50 dark:bg-gray-900">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about-me" element={<AboutMePage />} />
