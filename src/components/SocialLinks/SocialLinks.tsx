@@ -34,7 +34,7 @@ const SocialLinks: React.FC = () => {
        <a 
         key={name}
         href={href}
-        className={"text-gray-600 dark:text-gray-300 hover: text-blue-600"} 
+        className={"text-gray-600 dark:text-gray-300 hover:text-blue-600"} 
         target="_blank" 
         rel="noopener noreferrer"
        >

@@ -14,7 +14,6 @@ const App: React.FC = () => {
       <div className="flex flex-wrap items-center justify-between p-4 bg-gray-900 dark:bg-gray-50 text-white dark:text-gray-900 shadow-lg">
         <NameComponent />
         <NavMenu />
-     
       </div>
 
       <main className="p-6 bg-gray-50 dark:bg-gray-900" >
