@@ -27,9 +27,9 @@ const App: React.FC = () => {
       <footer className="bg-gray-900 dark:bg-gray-50 text-white dark:text-gray-900 p-4 mt-8">
         <div className="container mx-auto text-center">
           <p className="mb-2">© {new Date().getFullYear()} Guy Green</p>
-          <ul className="flex justify-center space-x-4">
+          <div className="flex justify-center space-x-4">
             <SocialLinks />
-          </ul>
+          </div>
         </div>
       </footer>
     </Router>
