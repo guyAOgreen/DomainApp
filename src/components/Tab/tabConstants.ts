@@ -1,4 +1,4 @@
 export const enum ChessPageTabs {
-    RecentGames = 0,
-    links = 1,
-};
+  RecentGames = 0,
+  links = 1,
+}
