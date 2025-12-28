@@ -1,0 +1,7 @@
+build
+node_modules
+public
+assets
+*.json
+.prettierrc
+*.md
