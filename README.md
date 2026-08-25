@@ -26,7 +26,7 @@ A personal portfolio and CV website built with React and TypeScript. The site br
 ### Prerequisites
 
 - Node.js 20
-- npm or Yarn
+- Yarn
 
 ### Installation
 
@@ -35,13 +35,13 @@ Clone the repository and install its dependencies:
 ```bash
 git clone git@github.com:guyAOgreen/DomainApp.git
 cd DomainApp
-npm install
+yarn install
 ```
 
 Start the local development server:
 
 ```bash
-npm start
+yarn start
 ```
 
 The site will be available at [http://localhost:3000](http://localhost:3000).
@@ -50,11 +50,11 @@ The site will be available at [http://localhost:3000](http://localhost:3000).
 
 | Command | Description |
 | --- | --- |
-| `npm start` | Run the app locally in development mode. |
-| `npm test` | Run the test suite in watch mode. |
-| `npm run build` | Create an optimized production build in `build/`. |
-| `npm run prettify` | Check the repository's Prettier formatting. |
-| `npm run prettify:fix` | Apply Prettier formatting. |
+| `yarn start` | Run the app locally in development mode. |
+| `yarn test` | Run the test suite in watch mode. |
+| `yarn build` | Create an optimized production build in `build/`. |
+| `yarn prettify` | Check the repository's Prettier formatting. |
+| `yarn prettify:fix` | Apply Prettier formatting. |
 
 ## Project structure
 
