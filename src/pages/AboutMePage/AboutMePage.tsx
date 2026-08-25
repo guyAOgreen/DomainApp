@@ -41,15 +41,17 @@ const AboutMePage: React.FC = () => {
 
       {/* Image Gallery */}
       <section className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg", "7.jpeg","profile.jpg"].map((imgName, idx) => (
-          <div key={idx} className="overflow-hidden rounded-lg shadow-lg">
-            <img
-              src={require(`../../assets/images/${imgName}`)}
-              alt={`About Me ${idx + 1}`}
-              className="w-full h-48 object-cover transform hover:scale-105 transition duration-300"
-            />
-          </div>
-        ))}
+        {["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg", "7.jpeg", "profile.jpg"].map(
+          (imgName, idx) => (
+            <div key={idx} className="overflow-hidden rounded-lg shadow-lg">
+              <img
+                src={require(`../../assets/images/${imgName}`)}
+                alt={`About Me ${idx + 1}`}
+                className="w-full h-48 object-cover transform hover:scale-105 transition duration-300"
+              />
+            </div>
+          )
+        )}
       </section>
     </div>
   );
