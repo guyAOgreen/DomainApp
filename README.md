@@ -1,46 +1,76 @@
-# Getting Started with Create React App
+# Guy Green's Domain App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). Currently I am using v20 for node.
+A personal portfolio and CV website built with React and TypeScript. The site brings together my professional experience, interests, social profiles, and recent chess games.
 
-## Available Scripts
+## What's included
 
-In the project directory, you can run:
+- A homepage with a short introduction and overview of my interests
+- An About Me page with a personal profile and photo gallery
+- A CV page with an online summary and downloadable PDF
+- A chess page that retrieves recent games from Lichess
+- Links to my GitHub, LinkedIn, and Instagram profiles
+- Responsive light and dark colour schemes
 
-### `npm start`
+## Tech stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- React 18
+- TypeScript
+- React Router
+- Tailwind CSS
+- Axios
+- React Icons
+- Create React App
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Getting started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js 20
+- Yarn
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Clone the repository and install its dependencies:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+git clone git@github.com:guyAOgreen/DomainApp.git
+cd DomainApp
+yarn install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Start the local development server:
 
-### `npm run eject`
+```bash
+yarn start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The site will be available at [http://localhost:3000](http://localhost:3000).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Available scripts
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+| Command | Description |
+| --- | --- |
+| `yarn start` | Run the app locally in development mode. |
+| `yarn test` | Run the test suite in watch mode. |
+| `yarn build` | Create an optimized production build in `build/`. |
+| `yarn prettify` | Check the repository's Prettier formatting. |
+| `yarn prettify:fix` | Apply Prettier formatting. |
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Project structure
 
-## Learn More
+```text
+src/
+├── assets/       Images, GIFs, and the downloadable CV
+├── components/   Shared navigation, social, loading, and tab components
+├── constants/    Shared application constants
+├── pages/        Home, About Me, CV, and Chess routes
+└── utils/        Utilities for processing Lichess game data
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## External data
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The chess page requests recent public games from the [Lichess API](https://lichess.org/api). If the API is unavailable, that page may not be able to display recent games.
+
+## License
+
+No license has been added to this repository. All rights are reserved unless a license is added later.
