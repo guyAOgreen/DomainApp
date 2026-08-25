@@ -19,13 +19,14 @@ A personal portfolio and CV website built with React and TypeScript. The site br
 - Tailwind CSS
 - Axios
 - React Icons
-- Create React App
+- Vite
+- Vitest and Testing Library
 
 ## Getting started
 
 ### Prerequisites
 
-- Node.js 20
+- Node.js 20.19 or newer
 - Yarn
 
 ### Installation
@@ -41,18 +42,21 @@ yarn install
 Start the local development server:
 
 ```bash
-yarn start
+yarn dev
 ```
 
-The site will be available at [http://localhost:3000](http://localhost:3000).
+The site will be available at [http://localhost:5173](http://localhost:5173).
 
 ## Available scripts
 
 | Command | Description |
 | --- | --- |
-| `yarn start` | Run the app locally in development mode. |
-| `yarn test` | Run the test suite in watch mode. |
-| `yarn build` | Create an optimized production build in `build/`. |
+| `yarn dev` | Run the Vite development server. |
+| `yarn start` | Alias for the Vite development server. |
+| `yarn test` | Run the Vitest suite once. |
+| `yarn test:watch` | Run Vitest in watch mode. |
+| `yarn build` | Type-check and create an optimized production build in `dist/`. |
+| `yarn preview` | Preview the production build locally. |
 | `yarn prettify` | Check the repository's Prettier formatting. |
 | `yarn prettify:fix` | Apply Prettier formatting. |
 
@@ -70,6 +74,11 @@ src/
 ## External data
 
 The chess page requests recent public games from the [Lichess API](https://lichess.org/api). If the API is unavailable, that page may not be able to display recent games.
+
+## Deployment
+
+Run `yarn build` and deploy the generated `dist/` directory to a static host. The host must
+serve `index.html` as the fallback for unknown paths so React Router routes can be loaded directly.
 
 ## License
 

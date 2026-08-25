@@ -1,4 +1,14 @@
 import React from "react";
+import image1 from "../../assets/images/1.jpeg";
+import image2 from "../../assets/images/2.jpeg";
+import image3 from "../../assets/images/3.jpeg";
+import image4 from "../../assets/images/4.jpeg";
+import image5 from "../../assets/images/5.jpeg";
+import image6 from "../../assets/images/6.jpeg";
+import image7 from "../../assets/images/7.jpeg";
+import profileImage from "../../assets/images/profile.jpg";
+
+const galleryImages = [image1, image2, image3, image4, image5, image6, image7, profileImage];
 
 const AboutMePage: React.FC = () => {
   return (
@@ -41,17 +51,15 @@ const AboutMePage: React.FC = () => {
 
       {/* Image Gallery */}
       <section className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg", "7.jpeg", "profile.jpg"].map(
-          (imgName, idx) => (
-            <div key={idx} className="overflow-hidden rounded-lg shadow-lg">
-              <img
-                src={require(`../../assets/images/${imgName}`)}
-                alt={`About Me ${idx + 1}`}
-                className="w-full h-48 object-cover transform hover:scale-105 transition duration-300"
-              />
-            </div>
-          )
-        )}
+        {galleryImages.map((image, idx) => (
+          <div key={idx} className="overflow-hidden rounded-lg shadow-lg">
+            <img
+              src={image}
+              alt={`About Me ${idx + 1}`}
+              className="w-full h-48 object-cover transform hover:scale-105 transition duration-300"
+            />
+          </div>
+        ))}
       </section>
     </div>
   );

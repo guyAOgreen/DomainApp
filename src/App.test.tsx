@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
+import { vi } from "vitest";
 import App from "./App";
 
-jest.mock("axios", () => ({
+vi.mock("axios", () => ({
   get: () => Promise.resolve({ data: "" }),
 }));
 

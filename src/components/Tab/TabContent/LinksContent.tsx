@@ -1,16 +1,18 @@
 import React from "react";
+import chessComIcon from "../../../assets/images/chesscom-icon.png";
+import lichessIcon from "../../../assets/images/lichess-icon.png";
 
 const LinksContent: React.FC = () => {
   const links = [
     {
       href: "https://www.chess.com/member/wowthisguyisamazing",
-      imgSrc: require("../../../assets/images/chesscom-icon.png"),
+      imgSrc: chessComIcon,
       alt: "Chess.com Icon",
       label: "WowThisGuyIsAmazing on Chess.com",
     },
     {
       href: "https://lichess.org/@/guygreenInClassAtUCT",
-      imgSrc: require("../../../assets/images/lichess-icon.png"),
+      imgSrc: lichessIcon,
       alt: "Lichess Icon",
       label: "GuyGreenInClassAtUCT on Lichess",
     },
