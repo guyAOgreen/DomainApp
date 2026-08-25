@@ -26,7 +26,7 @@ A personal portfolio and CV website built with React and TypeScript. The site br
 
 ### Prerequisites
 
-- Node.js 20.19 or newer
+- Node.js 22.22.2 or newer
 - Yarn
 
 ### Installation
