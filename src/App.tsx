@@ -7,6 +7,7 @@ import AboutMePage from "./pages/AboutMePage/AboutMePage";
 import CvPage from "./pages/CVPage/CVPage";
 import ChessPage from "./pages/ChessPage/ChessPage";
 import SocialLinks from "./components/SocialLinks/SocialLinks";
+import { appRoutes } from "./constants/routeConstants";
 
 const App: React.FC = () => {
   return (
@@ -18,10 +19,10 @@ const App: React.FC = () => {
 
       <main className="p-6 bg-gray-50 dark:bg-gray-900">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about-me" element={<AboutMePage />} />
-          <Route path="/cv" element={<CvPage />} />
-          <Route path="/chess" element={<ChessPage />} />
+          <Route path={appRoutes.home} element={<HomePage />} />
+          <Route path={appRoutes.aboutMe} element={<AboutMePage />} />
+          <Route path={appRoutes.cv} element={<CvPage />} />
+          <Route path={appRoutes.chess} element={<ChessPage />} />
         </Routes>
       </main>
       <footer className="bg-gray-900 dark:bg-gray-50 text-white dark:text-gray-900 p-4 mt-8">

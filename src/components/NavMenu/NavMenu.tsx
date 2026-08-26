@@ -1,4 +1,13 @@
+import { NavLink } from "react-router-dom";
 import catGif from "../../assets/gifs/cat.gif";
+import { appRoutes } from "../../constants/routeConstants";
+
+const navItems = [
+  { label: "Home", to: appRoutes.home },
+  { label: "About", to: appRoutes.aboutMe },
+  { label: "CV", to: appRoutes.cv },
+  { label: "Chess", to: appRoutes.chess },
+];
 
 const NavMenu = () => (
   <>
@@ -8,18 +17,18 @@ const NavMenu = () => (
       className="w-16 h-16 rounded-full border-4 border-white dark:border-gray-900"
     />
     <nav className="flex gap-6 text-lg">
-      <a href="/" className="hover:text-blue-400 transition">
-        Home
-      </a>
-      <a href="/about-me" className="hover:text-blue-400 transition">
-        About
-      </a>
-      <a href="/cv" className="hover:text-blue-400 transition">
-        CV
-      </a>
-      <a href="/chess" className="hover:text-blue-400 transition">
-        Chess
-      </a>
+      {navItems.map(({ label, to }) => (
+        <NavLink
+          key={to}
+          to={to}
+          end={to === appRoutes.home}
+          className={({ isActive }) =>
+            `transition hover:text-blue-400 ${isActive ? "text-blue-400 underline decoration-2 underline-offset-8" : ""}`
+          }
+        >
+          {label}
+        </NavLink>
+      ))}
     </nav>
   </>
 );

@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { appRoutes } from "../../constants/routeConstants";
 
 const HomePage: React.FC = () => {
   return (
@@ -11,18 +13,18 @@ const HomePage: React.FC = () => {
           exercise, or exploring new technologies.
         </p>
         <div className="flex gap-4">
-          <a
-            href="/about-me"
+          <Link
+            to={appRoutes.aboutMe}
             className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-500 transition"
           >
             Learn More About Me
-          </a>
-          <a
-            href="/cv"
+          </Link>
+          <Link
+            to={appRoutes.cv}
             className="px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg shadow hover:bg-blue-600 hover:text-white transition"
           >
             View My CV
-          </a>
+          </Link>
         </div>
       </section>
 
