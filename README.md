@@ -52,7 +52,6 @@ The site will be available at [http://localhost:5173](http://localhost:5173).
 | Command | Description |
 | --- | --- |
 | `yarn dev` | Run the Vite development server. |
-| `yarn start` | Alias for the Vite development server. |
 | `yarn test` | Run the Vitest suite once. |
 | `yarn test:watch` | Run Vitest in watch mode. |
 | `yarn build` | Type-check and create an optimized production build in `dist/`. |

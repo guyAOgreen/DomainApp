@@ -12,7 +12,6 @@
   },
   "scripts": {
     "dev": "vite",
-    "start": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "prettify": "yarn prettier --config .prettierrc --check .",
