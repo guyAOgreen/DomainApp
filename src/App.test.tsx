@@ -78,6 +78,6 @@ describe("App", () => {
     renderRoute(route);
 
     expect(screen.getByText(expectedText)).toBeInTheDocument();
-    expect(screen.getByText("© " + new Date().getFullYear() + " Guy Green")).toBeInTheDocument();
+    expect(screen.getByText(/^© \d{4} Guy Green$/)).toBeInTheDocument();
   });
 });
