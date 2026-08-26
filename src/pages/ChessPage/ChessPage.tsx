@@ -9,39 +9,55 @@ import LinksContent from "../../components/Tab/TabContent/LinksContent";
 import Loader from "../../components/Loader/Loader";
 
 const ChessPage: React.FC = () => {
-  const [games, setGames] = React.useState<String>("");
-  const [gamesIds, setGamesIds] = React.useState<String[]>([]);
-  const [loaded, setLoaded] = React.useState<boolean>(false);
+  const [gameIds, setGameIds] = React.useState<string[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
   const [displayTab, setDisplayTab] = React.useState<number>(ChessPageTabs.RecentGames);
 
   React.useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await axios.get(
+        const response = await axios.get<string>(
           `https://lichess.org/api/games/user/guygreenInClassAtUCT?max=${numberOfRecentGamesShown}`
         );
-        setGames(response.data);
-      } catch (error) {
-        console.error("Error fetching games:", error);
+        setGameIds(extractLichessGameIds(response.data));
+      } catch {
+        setError("Recent games could not be loaded. Please try again later.");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchGames();
   }, []);
 
-  React.useEffect(() => {
-    if (games?.length > 0) {
-      setGamesIds(extractLichessGameIds(games));
+  const renderRecentGames = () => {
+    if (isLoading) {
+      return <Loader />;
     }
-  }, [games]);
 
-  if (gamesIds.length === numberOfRecentGamesShown && !loaded) {
-    setLoaded(true);
-  }
+    if (error) {
+      return (
+        <p role="alert" className="py-20 text-center text-lg font-medium text-red-600">
+          {error}
+        </p>
+      );
+    }
+
+    if (gameIds.length === 0) {
+      return (
+        <p className="py-20 text-center text-lg text-gray-700 dark:text-gray-300">
+          No recent games are available.
+        </p>
+      );
+    }
+
+    return <RecentGamesContent gameIds={gameIds} />;
+  };
 
   const renderTabs = () => {
     switch (displayTab) {
       case ChessPageTabs.RecentGames:
-        return loaded ? <RecentGamesContent gamesIds={gamesIds} /> : <Loader />;
+        return renderRecentGames();
       case ChessPageTabs.links:
         return <LinksContent />;
       default:
