@@ -1,7 +1,2 @@
-export const extractLichessGameIds: (pgnResponse: String) => String[] = (pgnResponse) => {
-  let gameIds: String[] = [];
-
-  gameIds = Array.from(pgnResponse.matchAll(/{"id":"(.*?)"/g)).map((match) => match[1]);
-
-  return gameIds;
-};
+export const extractLichessGameIds = (pgnResponse: string): string[] =>
+  Array.from(pgnResponse.matchAll(/{"id":"(.*?)"/g)).map((match) => match[1]);
