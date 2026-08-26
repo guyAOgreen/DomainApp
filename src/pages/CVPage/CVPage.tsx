@@ -1,4 +1,5 @@
 import React from "react";
+import cvUrl from "../../assets/cv/GuyGreenCV.pdf";
 
 const CvPage: React.FC = () => {
   return (
@@ -9,15 +10,11 @@ const CvPage: React.FC = () => {
       <section className="max-w-4xl mx-auto my-12">
         <h2 className="text-3xl font-semibold mb-6 text-center">Download or View My CV</h2>
         <div className="border rounded-lg overflow-hidden shadow-lg">
-          <iframe
-            src={require("../../assets/cv/GuyGreenCV.pdf")}
-            className="w-full h-[600px]"
-            title="Guy Green CV"
-          />
+          <iframe src={cvUrl} className="w-full h-[600px]" title="Guy Green CV" />
         </div>
         <div className="mt-4 text-center">
           <a
-            href={require("../../assets/cv/GuyGreenCV.pdf")}
+            href={cvUrl}
             download
             className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-500 transition"
           >
