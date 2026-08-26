@@ -66,4 +66,18 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: /Oracle.*Software Engineer/ })).toBeInTheDocument();
     expect(screen.getByText(/Ambassador for GreenPoint Virgin Active Padel/)).toBeInTheDocument();
   });
+
+  it.each([
+    ["/", /football — which keeps me energized/],
+    ["/", /Whether it’s for work, collaboration/],
+    ["/about-me", /football — I am even an ambassador/],
+    ["/about-me", /I’m an avid F1 fan/],
+    ["/cv", "Oracle — Software Engineer"],
+    ["/cv", "April 2020 – Present"],
+  ])("renders UTF-8 punctuation correctly on %s", (route, expectedText) => {
+    renderRoute(route);
+
+    expect(screen.getByText(expectedText)).toBeInTheDocument();
+    expect(screen.getByText(/^© \d{4} Guy Green$/)).toBeInTheDocument();
+  });
 });
