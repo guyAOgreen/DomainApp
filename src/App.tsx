@@ -6,6 +6,7 @@ import NameComponent from "./components/NameComponent/NameComponent";
 import AboutMePage from "./pages/AboutMePage/AboutMePage";
 import CvPage from "./pages/CVPage/CVPage";
 import ChessPage from "./pages/ChessPage/ChessPage";
+import ProjectsPage from "./pages/ProjectsPage/ProjectsPage";
 import SocialLinks from "./components/SocialLinks/SocialLinks";
 import { appRoutes } from "./constants/routeConstants";
 
@@ -21,6 +22,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path={appRoutes.home} element={<HomePage />} />
           <Route path={appRoutes.aboutMe} element={<AboutMePage />} />
+          <Route path={appRoutes.projects} element={<ProjectsPage />} />
           <Route path={appRoutes.cv} element={<CvPage />} />
           <Route path={appRoutes.chess} element={<ChessPage />} />
         </Routes>

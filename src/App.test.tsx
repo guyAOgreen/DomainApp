@@ -18,6 +18,7 @@ describe("App", () => {
 
     expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("href", "/about-me");
+    expect(screen.getByRole("link", { name: "Projects" })).toHaveAttribute("href", "/projects");
     expect(screen.getByRole("link", { name: "CV" })).toHaveAttribute("href", "/cv");
     expect(screen.getByRole("link", { name: "Chess" })).toHaveAttribute("href", "/chess");
   });
@@ -49,9 +50,20 @@ describe("App", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Curriculum Vitae" })).toBeInTheDocument();
   });
 
+  it("links prominently from the homepage to the projects page", async () => {
+    const user = userEvent.setup();
+    renderRoute("/");
+
+    await user.click(screen.getByRole("link", { name: "View My Projects" }));
+
+    expect(window.location.pathname).toBe("/projects");
+    expect(screen.getByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
+  });
+
   it.each([
     ["/", "Hi, I'm Guy Green"],
     ["/about-me", "About Me"],
+    ["/projects", "Projects"],
     ["/cv", "Curriculum Vitae"],
     ["/chess", "My Chess Life"],
   ])("renders the %s route", (route, heading) => {
@@ -70,6 +82,35 @@ describe("App", () => {
     renderRoute(route);
 
     expect(screen.getByText(/ambassador for Epicenter Virgin Active Padel/i)).toBeInTheDocument();
+  });
+
+  it("presents FootyBru and its current delivery status", () => {
+    renderRoute("/projects");
+
+    expect(screen.getByRole("heading", { level: 2, name: "FootyBru" })).toBeInTheDocument();
+    expect(screen.getByText(/creator and sole contributor/i)).toBeInTheDocument();
+    expect(screen.getByText("Backend — Live")).toBeInTheDocument();
+    expect(screen.getByText("Deployed on AWS Elastic Beanstalk.")).toBeInTheDocument();
+    expect(screen.getByText("Web app — Live")).toBeInTheDocument();
+    expect(screen.getByText("Deployed with AWS Amplify.")).toBeInTheDocument();
+    expect(screen.getByText("Mobile app — In development")).toBeInTheDocument();
+  });
+
+  it("lets visitors browse the accessible FootyBru product album", async () => {
+    const user = userEvent.setup();
+    renderRoute("/projects");
+
+    expect(screen.getByRole("img", { name: "FootyBru landing page" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Show FootyBru group dashboard" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "View FootyBru landing page full size" })
+    ).toHaveAttribute("target", "_blank");
+
+    await user.click(screen.getByRole("button", { name: "Next image" }));
+
+    expect(screen.getByRole("img", { name: "FootyBru group dashboard" })).toBeInTheDocument();
   });
 
   it.each([
