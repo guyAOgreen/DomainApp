@@ -12,12 +12,18 @@ const HomePage: React.FC = () => {
           applications. When I'm not coding, you can find me playing chess, being active with
           exercise, or exploring new technologies.
         </p>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap justify-center gap-4">
           <Link
             to={appRoutes.aboutMe}
             className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-500 transition"
           >
             Learn More About Me
+          </Link>
+          <Link
+            to={appRoutes.projects}
+            className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-500 transition"
+          >
+            View My Projects
           </Link>
           <Link
             to={appRoutes.cv}

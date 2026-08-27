@@ -5,6 +5,7 @@ import { appRoutes } from "../../constants/routeConstants";
 const navItems = [
   { label: "Home", to: appRoutes.home },
   { label: "About", to: appRoutes.aboutMe },
+  { label: "Projects", to: appRoutes.projects },
   { label: "CV", to: appRoutes.cv },
   { label: "Chess", to: appRoutes.chess },
 ];
