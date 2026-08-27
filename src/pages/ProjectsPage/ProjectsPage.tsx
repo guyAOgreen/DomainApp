@@ -1,7 +1,11 @@
-import dashboardScreenshot from "../../assets/images/projects/footybru-dashboard-demo.png";
-import landingPageScreenshot from "../../assets/images/projects/footybru-landing-page.png";
-import statsScreenshot from "../../assets/images/projects/footybru-stats-demo.png";
-import teamBalancingScreenshot from "../../assets/images/projects/footybru-team-balancing.png";
+import dashboardScreenshot from "../../assets/images/projects/footybru-dashboard-demo.jpg";
+import dashboardThumbnail from "../../assets/images/projects/footybru-dashboard-demo-thumbnail.jpg";
+import landingPageScreenshot from "../../assets/images/projects/footybru-landing-page.jpg";
+import landingPageThumbnail from "../../assets/images/projects/footybru-landing-page-thumbnail.jpg";
+import statsScreenshot from "../../assets/images/projects/footybru-stats-demo.jpg";
+import statsThumbnail from "../../assets/images/projects/footybru-stats-demo-thumbnail.jpg";
+import teamBalancingScreenshot from "../../assets/images/projects/footybru-team-balancing.jpg";
+import teamBalancingThumbnail from "../../assets/images/projects/footybru-team-balancing-thumbnail.jpg";
 import ImageAlbum from "../../components/ImageAlbum/ImageAlbum";
 
 const stack = [
@@ -18,21 +22,25 @@ const stack = [
 const screenshots = [
   {
     src: landingPageScreenshot,
+    thumbnailSrc: landingPageThumbnail,
     alt: "FootyBru landing page",
     caption: "A simple starting point for creating, joining, and managing football groups.",
   },
   {
     src: dashboardScreenshot,
+    thumbnailSrc: dashboardThumbnail,
     alt: "FootyBru group dashboard",
     caption: "The group dashboard brings sessions, results, payments, and admin actions together.",
   },
   {
     src: statsScreenshot,
+    thumbnailSrc: statsThumbnail,
     alt: "FootyBru player statistics",
     caption: "Player ratings, form, match records, and teammate insights in one view.",
   },
   {
     src: teamBalancingScreenshot,
+    thumbnailSrc: teamBalancingThumbnail,
     alt: "FootyBru team balancing options",
     caption: "Configurable balancing strategies support different priorities for each session.",
   },
@@ -116,7 +124,7 @@ const ProjectsPage = () => (
 
         <section>
           <h3 className="mb-4 text-2xl font-semibold">Product gallery</h3>
-          <ImageAlbum images={screenshots} />
+          <ImageAlbum images={screenshots} thumbnailsLabel="Choose a FootyBru screenshot" />
         </section>
       </div>
     </article>

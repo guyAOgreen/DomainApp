@@ -1,28 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type ImageAlbumItem = {
   src: string;
+  thumbnailSrc?: string;
   alt: string;
   caption: string;
 };
 
 type ImageAlbumProps = {
   images: ImageAlbumItem[];
+  thumbnailsLabel: string;
 };
 
-const ImageAlbum = ({ images }: ImageAlbumProps) => {
+const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (images.length > 0 && currentIndex >= images.length) {
+      setCurrentIndex(0);
+    }
+  }, [currentIndex, images.length]);
 
   if (images.length === 0) {
     return null;
   }
 
-  const currentImage = images[currentIndex];
+  const safeCurrentIndex = Math.min(currentIndex, images.length - 1);
+  const currentImage = images[safeCurrentIndex];
   const showPrevious = () => {
-    setCurrentIndex((index) => (index === 0 ? images.length - 1 : index - 1));
+    setCurrentIndex(safeCurrentIndex === 0 ? images.length - 1 : safeCurrentIndex - 1);
   };
   const showNext = () => {
-    setCurrentIndex((index) => (index + 1) % images.length);
+    setCurrentIndex((safeCurrentIndex + 1) % images.length);
   };
 
   return (
@@ -43,8 +52,12 @@ const ImageAlbum = ({ images }: ImageAlbumProps) => {
         </a>
         <figcaption className="flex flex-col gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 sm:flex-row sm:items-center sm:justify-between">
           <span>{currentImage.caption}</span>
-          <span aria-live="polite">
-            {currentIndex + 1} of {images.length}
+          <span>
+            {safeCurrentIndex + 1} of {images.length}
+          </span>
+          <span role="status" className="sr-only">
+            {currentImage.alt}. {currentImage.caption}. Image {safeCurrentIndex + 1} of{" "}
+            {images.length}.
           </span>
         </figcaption>
       </figure>
@@ -70,7 +83,8 @@ const ImageAlbum = ({ images }: ImageAlbumProps) => {
 
       <div
         className="mt-4 flex snap-x gap-3 overflow-x-auto pb-2"
-        aria-label="Choose a FootyBru screenshot"
+        role="group"
+        aria-label={thumbnailsLabel}
       >
         {images.map((image, index) => (
           <button
@@ -78,13 +92,13 @@ const ImageAlbum = ({ images }: ImageAlbumProps) => {
             type="button"
             onClick={() => setCurrentIndex(index)}
             aria-label={`Show ${image.alt}`}
-            aria-pressed={index === currentIndex}
+            aria-pressed={index === safeCurrentIndex}
             className={`w-40 shrink-0 snap-start overflow-hidden rounded-lg border-2 bg-gray-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
-              index === currentIndex ? "border-blue-500" : "border-transparent"
+              index === safeCurrentIndex ? "border-blue-500" : "border-transparent"
             }`}
           >
             <img
-              src={image.src}
+              src={image.thumbnailSrc ?? image.src}
               alt=""
               loading="lazy"
               className="aspect-video w-full object-contain"
