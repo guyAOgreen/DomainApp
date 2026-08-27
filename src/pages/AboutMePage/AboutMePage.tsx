@@ -31,8 +31,8 @@ const AboutMePage: React.FC = () => {
       <section className="max-w-4xl mx-auto mb-12 space-y-6">
         <p>
           I enjoy staying active and spending time outdoors. My main sports are padel, running, and
-          football — I am even an ambassador for GreenPoint Virgin Active Padel. Other sports I
-          enjoy include cricket, touch rugby, and squash.
+          football — I am even an ambassador for Epicenter Virgin Active Padel. Other sports I enjoy
+          include cricket, touch rugby, and squash.
         </p>
         <p>
           When it comes to spectating, I’m an avid F1 fan and participate in the F1 Fantasy Game

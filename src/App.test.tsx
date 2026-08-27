@@ -60,11 +60,16 @@ describe("App", () => {
     expect(screen.getByRole("heading", { level: 1, name: heading })).toBeInTheDocument();
   });
 
-  it("renders the current employment and ambassadorship content", () => {
+  it("renders the current employment content", () => {
     renderRoute("/cv");
 
     expect(screen.getByRole("heading", { name: /Oracle.*Software Engineer/ })).toBeInTheDocument();
-    expect(screen.getByText(/Ambassador for GreenPoint Virgin Active Padel/)).toBeInTheDocument();
+  });
+
+  it.each(["/about-me", "/cv"])("renders the current padel ambassadorship on %s", (route) => {
+    renderRoute(route);
+
+    expect(screen.getByText(/ambassador for Epicenter Virgin Active Padel/i)).toBeInTheDocument();
   });
 
   it.each([
