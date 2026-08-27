@@ -109,7 +109,7 @@ const CvPage: React.FC = () => {
             Chess Club.
           </li>
           <li>
-            Ambassador for GreenPoint Virgin Active Padel; actively participate in padel, running,
+            Ambassador for Epicenter Virgin Active Padel; actively participate in padel, running,
             and football.
           </li>
           <li>Avid F1 fan — participate in F1 Fantasy Game, following motorsport closely.</li>
