@@ -11,6 +11,7 @@ const TabButton: React.FC<TabButtonProps> = ({ showContentFn, title, page, isAct
   return (
     <button
       onClick={() => showContentFn(page)}
+      aria-pressed={isActive}
       className={`px-6 py-3 rounded-lg font-semibold shadow transition-colors
                 ${
                   isActive

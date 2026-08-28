@@ -34,7 +34,7 @@ const SocialLinks: React.FC = () => {
           <a
             key={name}
             href={href}
-            aria-label={name}
+            aria-label={`${name} (opens in a new tab)`}
             className="text-gray-300 hover:text-blue-300 dark:text-gray-700 dark:hover:text-blue-700"
             target="_blank"
             rel="noopener noreferrer"

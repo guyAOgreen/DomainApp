@@ -27,7 +27,7 @@ const HomePage: React.FC = () => {
           </Link>
           <Link
             to={appRoutes.cv}
-            className="px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg shadow hover:bg-blue-600 hover:text-white transition"
+            className="px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg shadow hover:bg-blue-600 hover:text-white dark:border-blue-300 dark:text-blue-300 transition"
           >
             View My CV
           </Link>

@@ -26,15 +26,41 @@ describe("App", () => {
   it("gives icon-only social links accessible names", () => {
     renderRoute("/");
 
-    expect(screen.getByRole("link", { name: "GitHub" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "LinkedIn" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Instagram" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "GitHub (opens in a new tab)" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "LinkedIn (opens in a new tab)" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Instagram (opens in a new tab)" })
+    ).toBeInTheDocument();
   });
 
   it("does not announce the decorative navigation image", () => {
+    const { container } = renderRoute("/");
+
+    expect(container.querySelectorAll("header img")).toHaveLength(2);
+    expect(screen.queryAllByRole("img")).toHaveLength(0);
+  });
+
+  it("provides landmarks and a way to bypass repeated navigation", () => {
     renderRoute("/");
 
-    expect(screen.queryByRole("img", { name: "Jumping Cat" })).not.toBeInTheDocument();
+    expect(screen.getByRole("banner")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Skip to main content" })).toHaveAttribute(
+      "href",
+      "#main-content"
+    );
+    expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
+  });
+
+  it("updates the page title and moves focus to main content after route navigation", async () => {
+    const user = userEvent.setup();
+    renderRoute("/");
+
+    expect(document.title).toBe("Home — Guy Green");
+    await user.click(screen.getByRole("link", { name: "Projects" }));
+
+    expect(document.title).toBe("Projects — Guy Green");
+    expect(screen.getByRole("main")).toHaveFocus();
+    expect(screen.getByText("Projects page loaded")).toHaveAttribute("role", "status");
   });
 
   it("identifies the active navigation link", () => {
@@ -131,9 +157,13 @@ describe("App", () => {
     renderRoute("/cv");
 
     expect(screen.getByTitle("Guy Green CV")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Open the CV PDF in a new tab" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "open the CV PDF in a new tab" })).toHaveAttribute(
       "target",
       "_blank"
+    );
+    expect(screen.getByRole("link", { name: "Read the HTML version below" })).toHaveAttribute(
+      "href",
+      "#cv-content"
     );
   });
 
@@ -146,7 +176,9 @@ describe("App", () => {
       screen.getByRole("button", { name: "Show FootyBru group dashboard" })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "View FootyBru landing page full size" })
+      screen.getByRole("link", {
+        name: "View FootyBru landing page full size (opens in a new tab)",
+      })
     ).toHaveAttribute("target", "_blank");
 
     await user.click(screen.getByRole("button", { name: "Next image" }));

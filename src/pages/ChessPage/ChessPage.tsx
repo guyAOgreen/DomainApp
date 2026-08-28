@@ -37,7 +37,10 @@ const ChessPage: React.FC = () => {
 
     if (error) {
       return (
-        <p role="alert" className="py-20 text-center text-lg font-medium text-red-600">
+        <p
+          role="alert"
+          className="py-20 text-center text-lg font-medium text-red-600 dark:text-red-400"
+        >
           {error}
         </p>
       );
