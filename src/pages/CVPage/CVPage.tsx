@@ -12,11 +12,23 @@ const CvPage: React.FC = () => {
         <div className="border rounded-lg overflow-hidden shadow-lg">
           <iframe src={cvUrl} className="w-full h-[600px]" title="Guy Green CV" />
         </div>
+        <p className="mt-4 text-center text-sm text-gray-700 dark:text-gray-300">
+          If the preview does not load,{" "}
+          <a
+            href={cvUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-blue-700 underline dark:text-blue-300"
+          >
+            Open the CV PDF in a new tab
+          </a>
+          .
+        </p>
         <div className="mt-4 text-center">
           <a
             href={cvUrl}
             download
-            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-500 transition"
+            className="px-6 py-3 bg-blue-700 text-white font-semibold rounded-lg shadow hover:bg-blue-800 transition"
           >
             Download CV (PDF)
           </a>

@@ -15,7 +15,7 @@ const TabButton: React.FC<TabButtonProps> = ({ showContentFn, title, page, isAct
                 ${
                   isActive
                     ? "bg-blue-600 text-white"
-                    : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-blue-500 hover:text-white"
+                    : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-blue-700 hover:text-white"
                 }`}
     >
       {title}

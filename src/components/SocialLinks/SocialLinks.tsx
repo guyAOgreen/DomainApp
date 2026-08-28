@@ -10,17 +10,17 @@ type SocialIcon = {
 
 export const socialIcons: SocialIcon[] = [
   {
-    name: "github",
+    name: "GitHub",
     href: "https://github.com/guyAOgreen",
     icon: FaGithub,
   },
   {
-    name: "linkedIn",
+    name: "LinkedIn",
     href: "https://linkedin.com/in/guy-green-ba3a59140",
     icon: FaLinkedin,
   },
   {
-    name: "instagram",
+    name: "Instagram",
     href: "https://instagram.com/guygreenforreal",
     icon: FaInstagram,
   },
@@ -34,11 +34,12 @@ const SocialLinks: React.FC = () => {
           <a
             key={name}
             href={href}
-            className={"text-gray-600 dark:text-gray-300 hover:text-blue-600"}
+            aria-label={name}
+            className="text-gray-300 hover:text-blue-300 dark:text-gray-700 dark:hover:text-blue-700"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Icon size={24} />
+            <Icon size={24} aria-hidden="true" />
           </a>
         );
       })}

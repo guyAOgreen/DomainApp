@@ -15,13 +15,13 @@ const HomePage: React.FC = () => {
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             to={appRoutes.aboutMe}
-            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-500 transition"
+            className="px-6 py-3 bg-blue-700 text-white font-semibold rounded-lg shadow hover:bg-blue-800 transition"
           >
             Learn More About Me
           </Link>
           <Link
             to={appRoutes.projects}
-            className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-500 transition"
+            className="px-6 py-3 bg-green-700 text-white font-semibold rounded-lg shadow hover:bg-green-800 transition"
           >
             View My Projects
           </Link>
@@ -77,7 +77,7 @@ const HomePage: React.FC = () => {
         </p>
         <a
           href="mailto:guygreen.dev@gmail.com"
-          className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-500 transition"
+          className="px-6 py-3 bg-green-700 text-white font-semibold rounded-lg shadow hover:bg-green-800 transition"
         >
           Contact Me
         </a>

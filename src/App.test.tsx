@@ -23,6 +23,20 @@ describe("App", () => {
     expect(screen.getByRole("link", { name: "Chess" })).toHaveAttribute("href", "/chess");
   });
 
+  it("gives icon-only social links accessible names", () => {
+    renderRoute("/");
+
+    expect(screen.getByRole("link", { name: "GitHub" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "LinkedIn" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Instagram" })).toBeInTheDocument();
+  });
+
+  it("does not announce the decorative navigation image", () => {
+    renderRoute("/");
+
+    expect(screen.queryByRole("img", { name: "Jumping Cat" })).not.toBeInTheDocument();
+  });
+
   it("identifies the active navigation link", () => {
     renderRoute("/about-me");
 
@@ -94,6 +108,33 @@ describe("App", () => {
     expect(screen.getByText("Web app — Live")).toBeInTheDocument();
     expect(screen.getByText("Deployed with AWS Amplify.")).toBeInTheDocument();
     expect(screen.getByText("Mobile app — In development")).toBeInTheDocument();
+  });
+
+  it("describes the photos in the About Me gallery", () => {
+    renderRoute("/about-me");
+
+    [
+      "Guy on a beach at sunset with mountains in the distance",
+      "Guy beside a decorated Christmas tree",
+      "Guy taking an outdoor selfie while wearing a red visor",
+      "Guy smiling indoors in a striped jacket",
+      "Guy standing on an indoor padel court",
+      "Guy pointing to his name on a race results board",
+      "Guy with another attendee at a Cape Town Chess event",
+      "Guy playing chess at a tournament",
+    ].forEach((description) => {
+      expect(screen.getByRole("img", { name: description })).toBeInTheDocument();
+    });
+  });
+
+  it("provides an alternative when the embedded CV cannot be viewed", () => {
+    renderRoute("/cv");
+
+    expect(screen.getByTitle("Guy Green CV")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Open the CV PDF in a new tab" })).toHaveAttribute(
+      "target",
+      "_blank"
+    );
   });
 
   it("lets visitors browse the accessible FootyBru product album", async () => {

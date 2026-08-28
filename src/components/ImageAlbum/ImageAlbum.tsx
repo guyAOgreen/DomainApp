@@ -75,7 +75,7 @@ const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
           type="button"
           onClick={showNext}
           aria-label="Next image"
-          className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          className="rounded-lg bg-blue-700 px-4 py-2 font-semibold text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
         >
           Next
         </button>
