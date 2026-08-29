@@ -8,7 +8,16 @@ import image6 from "../../assets/images/6.jpeg";
 import image7 from "../../assets/images/7.jpeg";
 import profileImage from "../../assets/images/profile.jpg";
 
-const galleryImages = [image1, image2, image3, image4, image5, image6, image7, profileImage];
+const galleryImages = [
+  { src: image1, alt: "Guy on a beach at sunset with mountains in the distance" },
+  { src: image2, alt: "Guy beside a decorated Christmas tree" },
+  { src: image3, alt: "Guy taking an outdoor selfie while wearing a red visor" },
+  { src: image4, alt: "Guy smiling indoors in a striped jacket" },
+  { src: image5, alt: "Guy standing on an indoor padel court" },
+  { src: image6, alt: "Guy pointing to his name on a race results board" },
+  { src: image7, alt: "Guy with another attendee at a Cape Town Chess event" },
+  { src: profileImage, alt: "Guy playing chess at a tournament" },
+];
 
 const AboutMePage: React.FC = () => {
   return (
@@ -50,16 +59,21 @@ const AboutMePage: React.FC = () => {
       </section>
 
       {/* Image Gallery */}
-      <section className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {galleryImages.map((image, idx) => (
-          <div key={idx} className="overflow-hidden rounded-lg shadow-lg">
-            <img
-              src={image}
-              alt={`About Me ${idx + 1}`}
-              className="w-full h-48 object-cover transform hover:scale-105 transition duration-300"
-            />
-          </div>
-        ))}
+      <section className="max-w-6xl mx-auto" aria-labelledby="photo-gallery-heading">
+        <h2 id="photo-gallery-heading" className="sr-only">
+          Photo gallery
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {galleryImages.map(({ src, alt }) => (
+            <div key={src} className="overflow-hidden rounded-lg shadow-lg">
+              <img
+                src={src}
+                alt={alt}
+                className="w-full h-48 object-cover transform hover:scale-105 transition duration-300"
+              />
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );

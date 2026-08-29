@@ -16,6 +16,7 @@
     "preview": "vite preview",
     "prettify": "yarn prettier --config .prettierrc --check .",
     "prettify:fix": "yarn prettier --config .prettierrc --write .",
+    "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -29,10 +30,15 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^6.1.0",
+    "axe-core": "^4.13.0",
+    "eslint": "^9",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "globals": "^17.11.0",
     "jsdom": "^30.0.1",
     "prettier": "3.6.2",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.68.0",
     "vite": "^8.2.2",
     "vitest": "^4.1.11"
   }

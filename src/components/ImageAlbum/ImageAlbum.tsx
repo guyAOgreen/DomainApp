@@ -36,13 +36,13 @@ const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
 
   return (
     <div>
-      <figure className="overflow-hidden rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
+      <figure className="overflow-hidden rounded-xl border border-gray-200 bg-gray-50 focus-within:ring-4 focus-within:ring-inset focus-within:ring-blue-700 dark:border-gray-700 dark:bg-gray-900">
         <a
           href={currentImage.src}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`View ${currentImage.alt} full size`}
-          className="block bg-gray-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          aria-label={`View ${currentImage.alt} full size (opens in a new tab)`}
+          className="block bg-gray-950 focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-white"
         >
           <img
             src={currentImage.src}
@@ -56,8 +56,7 @@ const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
             {safeCurrentIndex + 1} of {images.length}
           </span>
           <span role="status" className="sr-only">
-            {currentImage.alt}. {currentImage.caption}. Image {safeCurrentIndex + 1} of{" "}
-            {images.length}.
+            Image {safeCurrentIndex + 1} of {images.length}: {currentImage.alt}
           </span>
         </figcaption>
       </figure>
@@ -67,7 +66,7 @@ const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
           type="button"
           onClick={showPrevious}
           aria-label="Previous image"
-          className="rounded-lg border border-gray-300 px-4 py-2 font-semibold hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 dark:border-gray-600 dark:hover:bg-gray-700"
+          className="rounded-lg border border-gray-300 px-4 py-2 font-semibold hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
         >
           Previous
         </button>
@@ -75,14 +74,14 @@ const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
           type="button"
           onClick={showNext}
           aria-label="Next image"
-          className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          className="rounded-lg bg-blue-700 px-4 py-2 font-semibold text-white hover:bg-blue-800"
         >
           Next
         </button>
       </div>
 
       <div
-        className="mt-4 flex snap-x gap-3 overflow-x-auto pb-2"
+        className="mt-4 flex snap-x gap-3 overflow-x-auto p-2"
         role="group"
         aria-label={thumbnailsLabel}
       >
@@ -93,7 +92,7 @@ const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
             onClick={() => setCurrentIndex(index)}
             aria-label={`Show ${image.alt}`}
             aria-pressed={index === safeCurrentIndex}
-            className={`w-40 shrink-0 snap-start overflow-hidden rounded-lg border-2 bg-gray-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
+            className={`w-40 shrink-0 snap-start overflow-hidden rounded-lg border-2 bg-gray-950 ${
               index === safeCurrentIndex ? "border-blue-500" : "border-transparent"
             }`}
           >

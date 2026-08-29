@@ -24,9 +24,10 @@ describe("ImageAlbum", () => {
 
     await user.click(screen.getByRole("button", { name: "Show Second screenshot" }));
     expect(screen.getByRole("img", { name: "Second screenshot" })).toBeInTheDocument();
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "Second screenshot. Second caption. Image 2 of 3."
-    );
+    expect(screen.getByRole("status")).toHaveTextContent("Image 2 of 3: Second screenshot");
+    expect(
+      screen.getByRole("link", { name: "View Second screenshot full size (opens in a new tab)" })
+    ).toBeInTheDocument();
   });
 
   it("keeps rendering when its image list becomes shorter", async () => {

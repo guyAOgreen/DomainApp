@@ -10,13 +10,34 @@ const CvPage: React.FC = () => {
       <section className="max-w-4xl mx-auto my-12">
         <h2 className="text-3xl font-semibold mb-6 text-center">Download or View My CV</h2>
         <div className="border rounded-lg overflow-hidden shadow-lg">
-          <iframe src={cvUrl} className="w-full h-[600px]" title="Guy Green CV" />
+          <iframe src={cvUrl} className="h-[80vh] min-h-96 w-full" title="Guy Green CV" />
         </div>
+        <p className="mt-4 text-center text-sm text-gray-700 dark:text-gray-300">
+          If the preview does not load,{" "}
+          <a
+            href={cvUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-blue-700 underline dark:text-blue-300"
+          >
+            open the CV PDF in a new tab
+          </a>
+          .
+        </p>
+        <p className="mt-2 text-center text-sm text-gray-700 dark:text-gray-300">
+          <a
+            href="#cv-content"
+            className="font-semibold text-blue-700 underline dark:text-blue-300"
+          >
+            Read the HTML version below
+          </a>
+          .
+        </p>
         <div className="mt-4 text-center">
           <a
             href={cvUrl}
             download
-            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-500 transition"
+            className="px-6 py-3 bg-blue-700 text-white font-semibold rounded-lg shadow hover:bg-blue-800 transition"
           >
             Download CV (PDF)
           </a>
@@ -24,7 +45,7 @@ const CvPage: React.FC = () => {
       </section>
 
       {/* Education Section */}
-      <section className="mb-12 max-w-4xl mx-auto">
+      <section id="cv-content" className="mb-12 max-w-4xl mx-auto">
         <h2 className="text-3xl font-semibold mb-6">Education</h2>
         <div className="space-y-4">
           <div>

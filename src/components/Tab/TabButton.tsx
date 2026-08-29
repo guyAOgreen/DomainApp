@@ -11,11 +11,12 @@ const TabButton: React.FC<TabButtonProps> = ({ showContentFn, title, page, isAct
   return (
     <button
       onClick={() => showContentFn(page)}
+      aria-pressed={isActive}
       className={`px-6 py-3 rounded-lg font-semibold shadow transition-colors
                 ${
                   isActive
                     ? "bg-blue-600 text-white"
-                    : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-blue-500 hover:text-white"
+                    : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-blue-700 hover:text-white"
                 }`}
     >
       {title}
