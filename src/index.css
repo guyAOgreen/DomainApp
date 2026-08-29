@@ -14,10 +14,17 @@ code {
 }
 
 @layer base {
+  /* Two-tone ring: the white outline carries dark surfaces (the header and dark mode) and the
+     blue halo carries light ones, so the indicator stays visible on both. Neither colour reaches
+     3:1 on its own across every surface, so both halves have to survive.
+
+     The halo is !important because Tailwind's shadow utilities live in the utilities layer and
+     would otherwise replace box-shadow here, leaving only the white outline — invisible at
+     1.04:1 against bg-gray-50. Every primary button on the site carries `shadow`. */
   :focus-visible {
     outline: 3px solid white;
     outline-offset: 2px;
-    box-shadow: 0 0 0 5px #1d4ed8;
+    box-shadow: 0 0 0 5px #1d4ed8 !important;
   }
 }
 

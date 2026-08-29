@@ -26,30 +26,82 @@ describe("ChessPage", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Loading...");
   });
 
-  it("shows every returned game when Lichess returns fewer than the requested maximum", async () => {
+  it("embeds only the selected game and offers a control for each returned game", async () => {
+    axiosMocks.get.mockResolvedValue({
+      data: ['{"id":"first-game"}', '{"id":"second-game"}'].join("\n"),
+    });
+
+    const { container } = render(<ChessPage />);
+
+    expect(await screen.findByTitle("Lichess game 1")).toHaveAttribute(
+      "src",
+      expect.stringContaining("first-game")
+    );
+    expect(container.querySelectorAll("iframe")).toHaveLength(1);
+    expect(screen.getByRole("button", { name: "Show game 1" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    expect(screen.getByRole("button", { name: "Show game 2" })).toHaveAttribute(
+      "aria-pressed",
+      "false"
+    );
+    expect(screen.queryByRole("button", { name: "Show game 3" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+  });
+
+  it("moves to the next game and announces the new position", async () => {
+    const user = userEvent.setup();
+    axiosMocks.get.mockResolvedValue({
+      data: ['{"id":"first-game"}', '{"id":"second-game"}'].join("\n"),
+    });
+
+    const { container } = render(<ChessPage />);
+    await user.click(await screen.findByRole("button", { name: "Next game" }));
+
+    expect(screen.getByTitle("Lichess game 2")).toHaveAttribute(
+      "src",
+      expect.stringContaining("second-game")
+    );
+    expect(container.querySelectorAll("iframe")).toHaveLength(1);
+    expect(screen.getByRole("status")).toHaveTextContent("Game 2 of 2");
+  });
+
+  it("jumps to a game chosen from the selector", async () => {
+    const user = userEvent.setup();
+    axiosMocks.get.mockResolvedValue({
+      data: ['{"id":"first-game"}', '{"id":"second-game"}', '{"id":"third-game"}'].join("\n"),
+    });
+
+    render(<ChessPage />);
+    await user.click(await screen.findByRole("button", { name: "Show game 3" }));
+
+    expect(screen.getByTitle("Lichess game 3")).toHaveAttribute(
+      "src",
+      expect.stringContaining("third-game")
+    );
+    expect(screen.getByRole("button", { name: "Show game 3" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    expect(screen.getByRole("button", { name: "Show game 1" })).toHaveAttribute(
+      "aria-pressed",
+      "false"
+    );
+  });
+
+  it("wraps from the first game back to the last", async () => {
+    const user = userEvent.setup();
     axiosMocks.get.mockResolvedValue({
       data: ['{"id":"first-game"}', '{"id":"second-game"}'].join("\n"),
     });
 
     render(<ChessPage />);
+    await user.click(await screen.findByRole("button", { name: "Previous game" }));
 
-    expect(await screen.findByRole("button", { name: "Load Lichess game 1" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Load Lichess game 2" })).toBeInTheDocument();
-    expect(screen.queryByTitle("Lichess game 1")).not.toBeInTheDocument();
-    expect(screen.queryByTitle("Lichess game 3")).not.toBeInTheDocument();
-    expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
-  });
-
-  it("loads an embedded game only when requested", async () => {
-    const user = userEvent.setup();
-    axiosMocks.get.mockResolvedValue({ data: '{"id":"first-game"}' });
-
-    render(<ChessPage />);
-    await user.click(await screen.findByRole("button", { name: "Load Lichess game 1" }));
-
-    expect(screen.getByTitle("Lichess game 1")).toHaveAttribute(
+    expect(screen.getByTitle("Lichess game 2")).toHaveAttribute(
       "src",
-      expect.stringContaining("first-game")
+      expect.stringContaining("second-game")
     );
   });
 
