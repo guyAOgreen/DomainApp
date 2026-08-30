@@ -128,6 +128,9 @@ describe("App", () => {
     renderRoute("/projects");
 
     expect(screen.getByRole("heading", { level: 2, name: "FootyBru" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Visit FootyBru (opens in a new tab)" })
+    ).toHaveAttribute("href", "https://www.footybru.com");
     expect(screen.getByText(/creator and sole contributor/i)).toBeInTheDocument();
     expect(screen.getByText("Backend — Live")).toBeInTheDocument();
     expect(screen.getByText("Deployed on AWS Elastic Beanstalk.")).toBeInTheDocument();
@@ -143,13 +146,13 @@ describe("App", () => {
       "Guy on a beach at sunset with mountains in the distance",
       "Guy beside a decorated Christmas tree",
       "Guy taking an outdoor selfie while wearing a red visor",
-      "Guy smiling indoors in a striped jacket",
+      "Guy smiling in an airport while wearing a striped jacket",
       "Guy standing on an indoor padel court",
-      "Guy pointing to his name on a race results board",
-      "Guy with another attendee at a Cape Town Chess event",
+      "Guy pointing to his name and best previous Cape Town Marathon time on a runners' board",
+      "Guy with Peter Lékó at a Cape Town Chess event",
       "Guy playing chess at a tournament",
     ].forEach((description) => {
-      expect(screen.getByRole("img", { name: description })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: `Show ${description}` })).toBeInTheDocument();
     });
   });
 
@@ -189,8 +192,8 @@ describe("App", () => {
   it.each([
     ["/", /football — which keeps me energized/],
     ["/", /Whether it’s for work, collaboration/],
-    ["/about-me", /football — I am even an ambassador/],
-    ["/about-me", /I’m an avid F1 fan/],
+    ["/about-me", /football—the group I manage/],
+    ["/about-me", /and I’m an ambassador/],
     ["/cv", "Oracle — Software Engineer"],
     ["/cv", "April 2020 – Present"],
   ])("renders UTF-8 punctuation correctly on %s", (route, expectedText) => {

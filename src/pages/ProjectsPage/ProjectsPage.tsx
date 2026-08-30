@@ -63,6 +63,16 @@ const ProjectsPage = () => (
           A platform for running five-a-side football groups, from player sign-ups and session
           management to balanced teams, match results, statistics, and payments.
         </p>
+        <a
+          href="https://www.footybru.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit FootyBru (opens in a new tab)"
+          className="mt-6 inline-flex items-center gap-2 rounded-full border-2 border-white bg-white px-5 py-2.5 font-semibold text-blue-700 shadow-md transition hover:bg-transparent hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
+          Visit FootyBru
+          <span aria-hidden="true">↗</span>
+        </a>
       </div>
 
       <div className="space-y-10 p-6 md:p-10">
