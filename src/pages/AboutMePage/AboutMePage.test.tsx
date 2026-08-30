@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import AboutMePage from "./AboutMePage";
 
@@ -16,7 +17,8 @@ describe("AboutMePage", () => {
     expect(screen.getByRole("heading", { name: "Beyond the keyboard" })).toBeInTheDocument();
   });
 
-  it("presents the snapshots as an autoplaying, consistently cropped album", () => {
+  it("presents the snapshots as an autoplaying album without cropping Peter Lékó out", async () => {
+    const user = userEvent.setup();
     render(
       <MemoryRouter>
         <AboutMePage />
@@ -32,8 +34,11 @@ describe("AboutMePage", () => {
         name: "Guy on a beach at sunset with mountains in the distance",
       })
     ).toHaveClass("object-cover");
-    expect(
+    await user.click(
       screen.getByRole("button", { name: "Show Guy with Peter Lékó at a Cape Town Chess event" })
-    ).toBeInTheDocument();
+    );
+    expect(
+      screen.getByRole("img", { name: "Guy with Peter Lékó at a Cape Town Chess event" })
+    ).toHaveClass("object-contain");
   });
 });

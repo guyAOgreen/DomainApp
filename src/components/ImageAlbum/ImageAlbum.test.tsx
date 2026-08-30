@@ -10,6 +10,7 @@ const images: ImageAlbumItem[] = [
     alt: "Second screenshot",
     caption: "Second caption",
     objectPosition: "center top",
+    objectFit: "contain",
   },
   { src: "/third.png", alt: "Third screenshot", caption: "Third caption" },
 ];
@@ -36,6 +37,7 @@ describe("ImageAlbum", () => {
     expect(screen.getByRole("img", { name: "Second screenshot" })).toHaveStyle({
       objectPosition: "center top",
     });
+    expect(screen.getByRole("img", { name: "Second screenshot" })).toHaveClass("object-contain");
     expect(screen.getByRole("status")).toHaveTextContent("Image 2 of 3: Second screenshot");
     expect(
       screen.getByRole("link", { name: "View Second screenshot full size (opens in a new tab)" })

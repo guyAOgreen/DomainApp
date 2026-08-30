@@ -6,6 +6,7 @@ export type ImageAlbumItem = {
   thumbnailSrc?: string;
   alt: string;
   caption: string;
+  objectFit?: "contain" | "cover";
   objectPosition?: CSSProperties["objectPosition"];
 };
 
@@ -75,7 +76,7 @@ const ImageAlbum = ({
             alt={currentImage.alt}
             decoding="async"
             style={{ objectPosition: currentImage.objectPosition }}
-            className={`aspect-video h-full w-full ${imageFit === "cover" ? "object-cover" : "object-contain"}`}
+            className={`aspect-video h-full w-full ${(currentImage.objectFit ?? imageFit) === "cover" ? "object-cover" : "object-contain"}`}
           />
         </a>
         <figcaption className="flex flex-col gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 sm:flex-row sm:items-center sm:justify-between">
@@ -143,7 +144,7 @@ const ImageAlbum = ({
               loading="lazy"
               decoding="async"
               style={{ objectPosition: image.objectPosition }}
-              className={`aspect-video w-full ${imageFit === "cover" ? "object-cover" : "object-contain"}`}
+              className={`aspect-video w-full ${(image.objectFit ?? imageFit) === "cover" ? "object-cover" : "object-contain"}`}
             />
           </button>
         ))}

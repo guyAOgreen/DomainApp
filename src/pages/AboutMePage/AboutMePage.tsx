@@ -42,7 +42,7 @@ const galleryImages = [
     src: image7,
     alt: "Guy with Peter Lékó at a Cape Town Chess event",
     caption: "With Grandmaster Peter Lékó at a Cape Town Chess event.",
-    objectPosition: "center top",
+    objectFit: "contain" as const,
   },
   {
     src: profileImage,
