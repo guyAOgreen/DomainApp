@@ -95,12 +95,12 @@ const AboutMePage: React.FC = () => {
         </section>
 
         <section className="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
-          <h2 className="mb-4 text-2xl font-semibold">Beyond the keyboard</h2>
+          <h2 className="mb-4 text-2xl font-semibold">Beyond Code</h2>
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <p>
-              Football — both a favourite way to stay active and the real-world problem behind
-              FootyBru — connects my personal and product-building interests. I’m also a runner,
-              padel player, and ambassador for Epicenter Virgin Active Padel.
+              Padel is my main sport at the moment, and I’m an ambassador for Epicenter Virgin
+              Active Padel. I also run and play five-a-side football—the group I manage inspired
+              FootyBru.
             </p>
             <p>
               Chess keeps the strategic side of my brain busy. I represented my province at junior

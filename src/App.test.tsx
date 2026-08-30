@@ -192,8 +192,8 @@ describe("App", () => {
   it.each([
     ["/", /football — which keeps me energized/],
     ["/", /Whether it’s for work, collaboration/],
-    ["/about-me", /Football — both a favourite way/],
-    ["/about-me", /I’m also a runner/],
+    ["/about-me", /football—the group I manage/],
+    ["/about-me", /and I’m an ambassador/],
     ["/cv", "Oracle — Software Engineer"],
     ["/cv", "April 2020 – Present"],
   ])("renders UTF-8 punctuation correctly on %s", (route, expectedText) => {

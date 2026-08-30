@@ -20,7 +20,10 @@ describe("AboutMePage", () => {
     );
     expect(screen.getByRole("link", { name: "CV" })).toHaveAttribute("href", "/cv");
     expect(screen.getByRole("link", { name: "FootyBru" })).toHaveAttribute("href", "/projects");
-    expect(screen.getByRole("heading", { name: "Beyond the keyboard" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Beyond Code" })).toBeInTheDocument();
+    expect(screen.getByText(/Padel is my main sport/i)).toHaveTextContent(
+      /five-a-side football—the group I manage inspired FootyBru/i
+    );
     expect(screen.getByRole("heading", { name: "A few snapshots of my life" })).toBeInTheDocument();
   });
 
