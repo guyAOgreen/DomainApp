@@ -146,7 +146,7 @@ describe("App", () => {
       "Guy smiling in an airport while wearing a striped jacket",
       "Guy standing on an indoor padel court",
       "Guy pointing to his name on a race results board",
-      "Guy with another attendee at a Cape Town Chess event",
+      "Guy with Peter Leko at a Cape Town Chess event",
       "Guy playing chess at a tournament",
     ].forEach((description) => {
       expect(screen.getByRole("button", { name: `Show ${description}` })).toBeInTheDocument();

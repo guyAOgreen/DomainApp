@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
 
 export type ImageAlbumItem = {
   src: string;
   thumbnailSrc?: string;
   alt: string;
   caption: string;
+  objectPosition?: CSSProperties["objectPosition"];
 };
 
 type ImageAlbumProps = {
@@ -72,6 +74,7 @@ const ImageAlbum = ({
             src={currentImage.src}
             alt={currentImage.alt}
             decoding="async"
+            style={{ objectPosition: currentImage.objectPosition }}
             className={`aspect-video h-full w-full ${imageFit === "cover" ? "object-cover" : "object-contain"}`}
           />
         </a>
@@ -139,6 +142,7 @@ const ImageAlbum = ({
               alt=""
               loading="lazy"
               decoding="async"
+              style={{ objectPosition: image.objectPosition }}
               className={`aspect-video w-full ${imageFit === "cover" ? "object-cover" : "object-contain"}`}
             />
           </button>

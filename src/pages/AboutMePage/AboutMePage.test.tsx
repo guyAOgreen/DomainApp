@@ -32,5 +32,8 @@ describe("AboutMePage", () => {
         name: "Guy on a beach at sunset with mountains in the distance",
       })
     ).toHaveClass("object-cover");
+    expect(
+      screen.getByRole("button", { name: "Show Guy with Peter Leko at a Cape Town Chess event" })
+    ).toBeInTheDocument();
   });
 });
