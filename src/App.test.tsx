@@ -128,6 +128,9 @@ describe("App", () => {
     renderRoute("/projects");
 
     expect(screen.getByRole("heading", { level: 2, name: "FootyBru" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Visit FootyBru (opens in a new tab)" })
+    ).toHaveAttribute("href", "https://www.footybru.com");
     expect(screen.getByText(/creator and sole contributor/i)).toBeInTheDocument();
     expect(screen.getByText("Backend — Live")).toBeInTheDocument();
     expect(screen.getByText("Deployed on AWS Elastic Beanstalk.")).toBeInTheDocument();
