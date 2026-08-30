@@ -104,9 +104,11 @@ const AboutMePage: React.FC = () => {
             </p>
             <p>
               Chess keeps the strategic side of my brain busy. I represented my province at junior
-              level and now play for Observatory Chess Club in the Cape Town league. Away from
-              competition, I enjoy F1, quiz nights, go-karting, time with friends, and getting out
-              into nature.
+              level and now play for Observatory Chess Club in the Cape Town league.
+            </p>
+            <p>
+              Away from competition, I enjoy F1, Pokémon GO, quiz nights, go-karting, time with
+              friends, and getting out into nature.
             </p>
           </div>
         </section>

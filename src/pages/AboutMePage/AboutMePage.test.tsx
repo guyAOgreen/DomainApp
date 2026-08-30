@@ -24,6 +24,7 @@ describe("AboutMePage", () => {
     expect(screen.getByText(/Padel is my main sport/i)).toHaveTextContent(
       /five-a-side football—the group I manage inspired FootyBru/i
     );
+    expect(screen.getByText(/Away from competition/i)).toHaveTextContent(/Pokémon GO/);
     expect(screen.getByRole("heading", { name: "A few snapshots of my life" })).toBeInTheDocument();
   });
 
