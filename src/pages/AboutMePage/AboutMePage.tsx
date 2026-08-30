@@ -107,11 +107,8 @@ const AboutMePage: React.FC = () => {
       <section className="mx-auto max-w-6xl" aria-labelledby="photo-gallery-heading">
         <div className="mb-6 text-center">
           <h2 id="photo-gallery-heading" className="text-3xl font-semibold">
-            A few snapshots
+            A few snapshots of my life
           </h2>
-          <p className="mt-2 text-gray-700 dark:text-gray-300">
-            Sport, chess, Cape Town, and the people and places around them.
-          </p>
         </div>
         <ImageAlbum
           images={galleryImages}

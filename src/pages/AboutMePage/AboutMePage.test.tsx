@@ -15,6 +15,7 @@ describe("AboutMePage", () => {
     expect(screen.getByText(/full-stack software developer/i)).toHaveTextContent(/At Oracle/i);
     expect(screen.getByRole("link", { name: "FootyBru" })).toHaveAttribute("href", "/projects");
     expect(screen.getByRole("heading", { name: "Beyond the keyboard" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "A few snapshots of my life" })).toBeInTheDocument();
   });
 
   it("presents the snapshots as an autoplaying album without cropping the photos", async () => {
