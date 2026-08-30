@@ -35,8 +35,9 @@ const galleryImages = [
   },
   {
     src: image6,
-    alt: "Guy pointing to his name on a race results board",
-    caption: "Finding my finish on the race results board.",
+    alt: "Guy pointing to his name and best previous Cape Town Marathon time on a runners' board",
+    caption:
+      "The board records my previous Cape Town Marathons; I’m pointing out my name and best time.",
   },
   {
     src: image7,

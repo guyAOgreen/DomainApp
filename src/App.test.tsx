@@ -145,7 +145,7 @@ describe("App", () => {
       "Guy taking an outdoor selfie while wearing a red visor",
       "Guy smiling in an airport while wearing a striped jacket",
       "Guy standing on an indoor padel court",
-      "Guy pointing to his name on a race results board",
+      "Guy pointing to his name and best previous Cape Town Marathon time on a runners' board",
       "Guy with Peter Lékó at a Cape Town Chess event",
       "Guy playing chess at a tournament",
     ].forEach((description) => {
