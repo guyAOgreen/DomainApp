@@ -143,7 +143,7 @@ describe("App", () => {
       "Guy on a beach at sunset with mountains in the distance",
       "Guy beside a decorated Christmas tree",
       "Guy taking an outdoor selfie while wearing a red visor",
-      "Guy smiling indoors in a striped jacket",
+      "Guy smiling in an airport while wearing a striped jacket",
       "Guy standing on an indoor padel court",
       "Guy pointing to his name on a race results board",
       "Guy with another attendee at a Cape Town Chess event",
@@ -189,8 +189,8 @@ describe("App", () => {
   it.each([
     ["/", /football — which keeps me energized/],
     ["/", /Whether it’s for work, collaboration/],
-    ["/about-me", /football — I am even an ambassador/],
-    ["/about-me", /I’m an avid F1 fan/],
+    ["/about-me", /Football — both a favourite way/],
+    ["/about-me", /I’m also a runner/],
     ["/cv", "Oracle — Software Engineer"],
     ["/cv", "April 2020 – Present"],
   ])("renders UTF-8 punctuation correctly on %s", (route, expectedText) => {
