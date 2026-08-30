@@ -33,7 +33,7 @@ describe("AboutMePage", () => {
       })
     ).toHaveClass("object-cover");
     expect(
-      screen.getByRole("button", { name: "Show Guy with Peter Leko at a Cape Town Chess event" })
+      screen.getByRole("button", { name: "Show Guy with Peter Lékó at a Cape Town Chess event" })
     ).toBeInTheDocument();
   });
 });

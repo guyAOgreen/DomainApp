@@ -40,8 +40,8 @@ const galleryImages = [
   },
   {
     src: image7,
-    alt: "Guy with Peter Leko at a Cape Town Chess event",
-    caption: "With Grandmaster Peter Leko at a Cape Town Chess event.",
+    alt: "Guy with Peter Lékó at a Cape Town Chess event",
+    caption: "With Grandmaster Peter Lékó at a Cape Town Chess event.",
     objectPosition: "center top",
   },
   {
