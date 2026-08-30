@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaPause, FaPlay } from "react-icons/fa";
 
 export type ImageAlbumItem = {
   src: string;
@@ -106,20 +107,21 @@ const ImageAlbum = ({
       </div>
 
       {autoplayInterval !== undefined && (
-        <div className="mt-3 text-center">
+        <div className="mt-4 flex justify-center">
           <button
             type="button"
             onClick={() => setIsPlaying((playing) => !playing)}
             aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
-            className="rounded-lg px-4 py-2 font-semibold text-blue-700 underline dark:text-blue-300"
+            className="inline-flex items-center gap-2 rounded-full bg-blue-700 px-5 py-2.5 font-semibold text-white shadow-md transition hover:bg-blue-800 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500"
           >
+            {isPlaying ? <FaPause aria-hidden="true" /> : <FaPlay aria-hidden="true" />}
             {isPlaying ? "Pause autoplay" : "Play autoplay"}
           </button>
         </div>
       )}
 
       <div
-        className="mt-4 flex snap-x gap-3 overflow-x-auto p-2"
+        className="mt-4 grid grid-cols-2 gap-3 p-2 sm:grid-cols-4 lg:grid-cols-8"
         role="group"
         aria-label={thumbnailsLabel}
       >
@@ -130,7 +132,7 @@ const ImageAlbum = ({
             onClick={() => setCurrentIndex(index)}
             aria-label={`Show ${image.alt}`}
             aria-pressed={index === safeCurrentIndex}
-            className={`w-40 shrink-0 snap-start overflow-hidden rounded-lg border-2 bg-gray-950 ${
+            className={`w-full overflow-hidden rounded-lg border-2 bg-gray-950 ${
               index === safeCurrentIndex ? "border-blue-500" : "border-transparent"
             }`}
           >

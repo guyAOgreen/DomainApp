@@ -21,7 +21,10 @@ describe("ImageAlbum", () => {
   it("exposes the caller's thumbnail label as a group", () => {
     render(<ImageAlbum images={images} thumbnailsLabel="Choose demo screenshots" />);
 
-    expect(screen.getByRole("group", { name: "Choose demo screenshots" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Choose demo screenshots" })).toHaveClass("grid");
+    expect(screen.getByRole("group", { name: "Choose demo screenshots" })).not.toHaveClass(
+      "overflow-x-auto"
+    );
   });
 
   it("wraps backwards and supports direct thumbnail selection", async () => {
@@ -65,5 +68,9 @@ describe("ImageAlbum", () => {
 
     expect(screen.getByRole("img", { name: "Second screenshot" })).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("Image 2 of 3: Second screenshot");
+    expect(screen.getByRole("button", { name: "Pause slideshow" })).toHaveClass(
+      "bg-blue-700",
+      "text-white"
+    );
   });
 });
