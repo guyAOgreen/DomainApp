@@ -17,7 +17,7 @@ describe("AboutMePage", () => {
     expect(screen.getByRole("heading", { name: "Beyond the keyboard" })).toBeInTheDocument();
   });
 
-  it("presents the snapshots as an autoplaying album without cropping Peter Lékó out", async () => {
+  it("presents the snapshots as an autoplaying album without cropping the photos", async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>
@@ -33,7 +33,7 @@ describe("AboutMePage", () => {
       screen.getByRole("img", {
         name: "Guy on a beach at sunset with mountains in the distance",
       })
-    ).toHaveClass("object-cover");
+    ).toHaveClass("object-contain");
     await user.click(
       screen.getByRole("button", { name: "Show Guy with Peter Lékó at a Cape Town Chess event" })
     );

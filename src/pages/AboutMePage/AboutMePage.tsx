@@ -42,7 +42,6 @@ const galleryImages = [
     src: image7,
     alt: "Guy with Peter Lékó at a Cape Town Chess event",
     caption: "With Grandmaster Peter Lékó at a Cape Town Chess event.",
-    objectFit: "contain" as const,
   },
   {
     src: profileImage,
@@ -117,7 +116,6 @@ const AboutMePage: React.FC = () => {
           images={galleryImages}
           thumbnailsLabel="Choose a personal snapshot"
           autoplayInterval={5000}
-          imageFit="cover"
         />
       </section>
     </div>
