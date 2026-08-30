@@ -68,12 +68,20 @@ const AboutMePage: React.FC = () => {
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <p>
               I am a full-stack software developer with a background in Applied Mathematics and
-              Computer Science from UCT. Until 30 June 2026, I worked at Oracle across cloud
-              infrastructure, Multicloud, and Edge Computing projects. Since then, I’ve been
-              focusing on my own independent projects.
+              Computer Science from UCT. At ACI, I worked on software that processed payments from
+              point-of-sale systems to upstream systems. At Oracle, I worked across multiple cloud
+              projects. My{" "}
+              <Link
+                to={appRoutes.cv}
+                className="font-semibold text-blue-700 underline dark:text-blue-300"
+              >
+                CV
+              </Link>{" "}
+              covers the details.
             </p>
             <p>
-              I especially enjoy turning an idea into a useful product. One of those projects is{" "}
+              I’m now focused on my own independent projects and especially enjoy turning an idea
+              into a useful product. One of those projects is{" "}
               <Link
                 to={appRoutes.projects}
                 className="font-semibold text-blue-700 underline dark:text-blue-300"

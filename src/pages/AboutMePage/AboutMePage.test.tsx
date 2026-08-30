@@ -13,11 +13,12 @@ describe("AboutMePage", () => {
 
     expect(screen.getByRole("heading", { name: "Software and product" })).toBeInTheDocument();
     expect(screen.getByText(/full-stack software developer/i)).toHaveTextContent(
-      /Until 30 June 2026, I worked at Oracle/i
+      /At ACI, I worked on software that processed payments from point-of-sale systems to upstream systems/i
     );
     expect(screen.getByText(/full-stack software developer/i)).toHaveTextContent(
-      /Since then, I’ve been focusing on my own independent projects/i
+      /At Oracle, I worked across multiple cloud projects/i
     );
+    expect(screen.getByRole("link", { name: "CV" })).toHaveAttribute("href", "/cv");
     expect(screen.getByRole("link", { name: "FootyBru" })).toHaveAttribute("href", "/projects");
     expect(screen.getByRole("heading", { name: "Beyond the keyboard" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "A few snapshots of my life" })).toBeInTheDocument();
