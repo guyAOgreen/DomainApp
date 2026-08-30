@@ -1,5 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { afterEach, vi } from "vitest";
 import ImageAlbum, { type ImageAlbumItem } from "./ImageAlbum";
 
 const images: ImageAlbumItem[] = [
@@ -9,6 +10,10 @@ const images: ImageAlbumItem[] = [
 ];
 
 describe("ImageAlbum", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("exposes the caller's thumbnail label as a group", () => {
     render(<ImageAlbum images={images} thumbnailsLabel="Choose demo screenshots" />);
 
@@ -40,5 +45,21 @@ describe("ImageAlbum", () => {
     rerender(<ImageAlbum images={images.slice(0, 1)} thumbnailsLabel="Choose demo screenshots" />);
 
     expect(screen.getByRole("img", { name: "First screenshot" })).toBeInTheDocument();
+  });
+
+  it("automatically advances when autoplay is enabled", () => {
+    vi.useFakeTimers();
+    render(
+      <ImageAlbum
+        images={images}
+        thumbnailsLabel="Choose demo screenshots"
+        autoplayInterval={5000}
+      />
+    );
+
+    act(() => vi.advanceTimersByTime(5000));
+
+    expect(screen.getByRole("img", { name: "Second screenshot" })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Image 2 of 3: Second screenshot");
   });
 });

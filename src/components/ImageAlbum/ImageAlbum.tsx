@@ -10,16 +10,40 @@ export type ImageAlbumItem = {
 type ImageAlbumProps = {
   images: ImageAlbumItem[];
   thumbnailsLabel: string;
+  autoplayInterval?: number;
+  imageFit?: "contain" | "cover";
 };
 
-const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
+const ImageAlbum = ({
+  images,
+  thumbnailsLabel,
+  autoplayInterval,
+  imageFit = "contain",
+}: ImageAlbumProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(
+    () =>
+      autoplayInterval !== undefined &&
+      !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+  );
 
   useEffect(() => {
     if (images.length > 0 && currentIndex >= images.length) {
       setCurrentIndex(0);
     }
   }, [currentIndex, images.length]);
+
+  useEffect(() => {
+    if (!isPlaying || autoplayInterval === undefined || images.length < 2) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setCurrentIndex((index) => (index + 1) % images.length);
+    }, autoplayInterval);
+
+    return () => window.clearInterval(intervalId);
+  }, [autoplayInterval, images.length, isPlaying]);
 
   if (images.length === 0) {
     return null;
@@ -47,7 +71,8 @@ const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
           <img
             src={currentImage.src}
             alt={currentImage.alt}
-            className="aspect-video h-full w-full object-contain"
+            decoding="async"
+            className={`aspect-video h-full w-full ${imageFit === "cover" ? "object-cover" : "object-contain"}`}
           />
         </a>
         <figcaption className="flex flex-col gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 sm:flex-row sm:items-center sm:justify-between">
@@ -80,6 +105,19 @@ const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
         </button>
       </div>
 
+      {autoplayInterval !== undefined && (
+        <div className="mt-3 text-center">
+          <button
+            type="button"
+            onClick={() => setIsPlaying((playing) => !playing)}
+            aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
+            className="rounded-lg px-4 py-2 font-semibold text-blue-700 underline dark:text-blue-300"
+          >
+            {isPlaying ? "Pause autoplay" : "Play autoplay"}
+          </button>
+        </div>
+      )}
+
       <div
         className="mt-4 flex snap-x gap-3 overflow-x-auto p-2"
         role="group"
@@ -100,7 +138,8 @@ const ImageAlbum = ({ images, thumbnailsLabel }: ImageAlbumProps) => {
               src={image.thumbnailSrc ?? image.src}
               alt=""
               loading="lazy"
-              className="aspect-video w-full object-contain"
+              decoding="async"
+              className={`aspect-video w-full ${imageFit === "cover" ? "object-cover" : "object-contain"}`}
             />
           </button>
         ))}

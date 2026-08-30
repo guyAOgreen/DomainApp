@@ -16,22 +16,21 @@ describe("AboutMePage", () => {
     expect(screen.getByRole("heading", { name: "Beyond the keyboard" })).toBeInTheDocument();
   });
 
-  it("gives every consistently cropped gallery image descriptive text and lazy loading", () => {
+  it("presents the snapshots as an autoplaying, consistently cropped album", () => {
     render(
       <MemoryRouter>
         <AboutMePage />
       </MemoryRouter>
     );
 
-    const gallery = screen.getByRole("region", { name: "A few snapshots" });
-    const images = Array.from(gallery.querySelectorAll("img"));
-
-    expect(images).toHaveLength(8);
-    images.forEach((image) => {
-      expect(image).toHaveAttribute("loading", "lazy");
-      expect(image).toHaveClass("aspect-square", "object-cover");
-      expect(image).not.toHaveAttribute("alt", expect.stringMatching(/^image \d+$/i));
-      expect(image.getAttribute("alt")).not.toBe("");
-    });
+    expect(screen.getByRole("button", { name: "Previous image" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Next image" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Pause slideshow" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Choose a personal snapshot" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", {
+        name: "Guy on a beach at sunset with mountains in the distance",
+      })
+    ).toHaveClass("object-cover");
   });
 });

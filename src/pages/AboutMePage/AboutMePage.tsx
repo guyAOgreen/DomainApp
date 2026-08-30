@@ -8,17 +8,46 @@ import image5 from "../../assets/images/5.jpeg";
 import image6 from "../../assets/images/6.jpeg";
 import image7 from "../../assets/images/7.jpeg";
 import profileImage from "../../assets/images/profile.jpg";
+import ImageAlbum from "../../components/ImageAlbum/ImageAlbum";
 import { appRoutes } from "../../constants/routeConstants";
 
 const galleryImages = [
-  { src: image1, alt: "Guy on a beach at sunset with mountains in the distance" },
-  { src: image2, alt: "Guy beside a decorated Christmas tree" },
-  { src: image3, alt: "Guy taking an outdoor selfie while wearing a red visor" },
-  { src: image4, alt: "Guy smiling in an airport while wearing a striped jacket" },
-  { src: image5, alt: "Guy standing on an indoor padel court" },
-  { src: image6, alt: "Guy pointing to his name on a race results board" },
-  { src: image7, alt: "Guy with another attendee at a Cape Town Chess event" },
-  { src: profileImage, alt: "Guy playing chess at a tournament" },
+  {
+    src: image1,
+    alt: "Guy on a beach at sunset with mountains in the distance",
+    caption: "Sunset on the Cape Town coast.",
+  },
+  { src: image2, alt: "Guy beside a decorated Christmas tree", caption: "Christmas at home." },
+  {
+    src: image3,
+    alt: "Guy taking an outdoor selfie while wearing a red visor",
+    caption: "Out for a sunny run.",
+  },
+  {
+    src: image4,
+    alt: "Guy smiling in an airport while wearing a striped jacket",
+    caption: "Ready for the next trip.",
+  },
+  {
+    src: image5,
+    alt: "Guy standing on an indoor padel court",
+    caption: "On court for a game of padel.",
+  },
+  {
+    src: image6,
+    alt: "Guy pointing to his name on a race results board",
+    caption: "Finding my finish on the race results board.",
+  },
+  {
+    src: image7,
+    alt: "Guy with another attendee at a Cape Town Chess event",
+    caption: "At a Cape Town Chess event.",
+  },
+  {
+    src: profileImage,
+    alt: "Guy playing chess at a tournament",
+    caption: "Over the board at a chess tournament.",
+  },
 ];
 
 const AboutMePage: React.FC = () => {
@@ -83,19 +112,12 @@ const AboutMePage: React.FC = () => {
             Sport, chess, Cape Town, and the people and places around them.
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
-          {galleryImages.map(({ src, alt }) => (
-            <div key={src} className="overflow-hidden rounded-lg shadow-lg">
-              <img
-                src={src}
-                alt={alt}
-                loading="lazy"
-                decoding="async"
-                className="aspect-square w-full object-cover transition duration-300 motion-safe:hover:scale-105"
-              />
-            </div>
-          ))}
-        </div>
+        <ImageAlbum
+          images={galleryImages}
+          thumbnailsLabel="Choose a personal snapshot"
+          autoplayInterval={5000}
+          imageFit="cover"
+        />
       </section>
     </div>
   );

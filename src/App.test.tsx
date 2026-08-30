@@ -149,7 +149,7 @@ describe("App", () => {
       "Guy with another attendee at a Cape Town Chess event",
       "Guy playing chess at a tournament",
     ].forEach((description) => {
-      expect(screen.getByRole("img", { name: description })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: `Show ${description}` })).toBeInTheDocument();
     });
   });
 
