@@ -43,7 +43,7 @@ const AppContent: React.FC = () => {
       >
         Skip to main content
       </a>
-      <header className="flex flex-wrap items-center justify-between p-4 bg-gray-900 dark:bg-gray-50 text-white dark:text-gray-900 shadow-lg">
+      <header className="flex flex-wrap items-center justify-between gap-3 bg-gray-900 p-4 text-white shadow-lg dark:bg-gray-50 dark:text-gray-900">
         <NameComponent />
         <NavMenu />
       </header>
