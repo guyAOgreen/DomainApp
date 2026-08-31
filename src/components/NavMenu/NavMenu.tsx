@@ -20,7 +20,7 @@ const NavMenu = () => {
       <img
         src={catGif}
         alt=""
-        className="hidden h-14 w-14 rounded-full border-4 border-white motion-reduce:hidden dark:border-gray-900 lg:block"
+        className="hidden h-14 w-14 rounded-full border-4 border-white dark:border-gray-900 motion-safe:lg:block"
       />
       <button
         type="button"

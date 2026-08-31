@@ -26,15 +26,24 @@ describe("NavMenu", () => {
       "true"
     );
     expect(navigation).not.toHaveClass("hidden");
+
+    await user.click(screen.getByRole("link", { name: "About" }));
+
+    expect(screen.getByRole("button", { name: "Open navigation menu" })).toHaveAttribute(
+      "aria-expanded",
+      "false"
+    );
+    expect(navigation).toHaveClass("hidden", "md:block");
   });
 
-  it("keeps decorative imagery out of the mobile header layout", () => {
+  it("only reveals decorative animation on large screens when motion is allowed", () => {
     const { container } = render(
       <MemoryRouter>
         <NavMenu />
       </MemoryRouter>
     );
 
-    expect(container.querySelector("img")).toHaveClass("hidden", "lg:block");
+    expect(container.querySelector("img")).toHaveClass("hidden", "motion-safe:lg:block");
+    expect(container.querySelector("img")).not.toHaveClass("lg:block");
   });
 });
