@@ -94,14 +94,14 @@ describe("App", () => {
     const user = userEvent.setup();
     renderRoute("/");
 
-    await user.click(screen.getByRole("link", { name: "View My Projects" }));
+    await user.click(screen.getByRole("link", { name: "Explore my projects" }));
 
     expect(window.location.pathname).toBe("/projects");
     expect(screen.getByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
   });
 
   it.each([
-    ["/", "Hi, I'm Guy Green"],
+    ["/", "Full-stack developer and independent product builder"],
     ["/about-me", "About Me"],
     ["/projects", "Projects"],
     ["/cv", "Curriculum Vitae"],
@@ -190,7 +190,7 @@ describe("App", () => {
   });
 
   it.each([
-    ["/", /football — which keeps me energized/],
+    ["/", /backend, web, and mobile—from/],
     ["/", /Whether it’s for work, collaboration/],
     ["/about-me", /football—the group I manage/],
     ["/about-me", /and I’m an ambassador/],
