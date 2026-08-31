@@ -22,11 +22,15 @@ const ImageAlbum = ({
   imageFit = "contain",
 }: ImageAlbumProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(
-    () =>
-      autoplayInterval !== undefined &&
-      !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+  const [prefersReducedMotion] = useState(
+    () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
   );
+  const [isPlaying, setIsPlaying] = useState(
+    () => autoplayInterval !== undefined && !prefersReducedMotion
+  );
+  const [isHovered, setIsHovered] = useState(false);
+  const [hasFocus, setHasFocus] = useState(false);
+  const [isTabHidden, setIsTabHidden] = useState(document.visibilityState === "hidden");
 
   useEffect(() => {
     if (images.length > 0 && currentIndex >= images.length) {
@@ -35,7 +39,23 @@ const ImageAlbum = ({
   }, [currentIndex, images.length]);
 
   useEffect(() => {
-    if (!isPlaying || autoplayInterval === undefined || images.length < 2) {
+    const handleVisibilityChange = () => {
+      setIsTabHidden(document.visibilityState === "hidden");
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
+  useEffect(() => {
+    if (
+      !isPlaying ||
+      isHovered ||
+      hasFocus ||
+      isTabHidden ||
+      autoplayInterval === undefined ||
+      images.length < 2
+    ) {
       return;
     }
 
@@ -44,7 +64,7 @@ const ImageAlbum = ({
     }, autoplayInterval);
 
     return () => window.clearInterval(intervalId);
-  }, [autoplayInterval, images.length, isPlaying]);
+  }, [autoplayInterval, hasFocus, images.length, isHovered, isPlaying, isTabHidden]);
 
   if (images.length === 0) {
     return null;
@@ -60,7 +80,18 @@ const ImageAlbum = ({
   };
 
   return (
-    <div>
+    <div
+      role="region"
+      aria-label="Image album"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={() => setHasFocus(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          setHasFocus(false);
+        }
+      }}
+    >
       <figure className="overflow-hidden rounded-xl border border-gray-200 bg-gray-50 focus-within:ring-4 focus-within:ring-inset focus-within:ring-blue-700 dark:border-gray-700 dark:bg-gray-900">
         <a
           href={currentImage.src}
@@ -106,7 +137,7 @@ const ImageAlbum = ({
         </button>
       </div>
 
-      {autoplayInterval !== undefined && (
+      {autoplayInterval !== undefined && !prefersReducedMotion && (
         <div className="mt-4 flex justify-center">
           <button
             type="button"
