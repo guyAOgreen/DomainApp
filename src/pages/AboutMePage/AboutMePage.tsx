@@ -123,7 +123,7 @@ const AboutMePage: React.FC = () => {
         <ImageAlbum
           images={galleryImages}
           thumbnailsLabel="Choose a personal snapshot"
-          autoplayInterval={5000}
+          autoplayInterval={8000}
         />
       </section>
     </div>
