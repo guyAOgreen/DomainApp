@@ -79,6 +79,34 @@ The chess page requests recent public games from the [Lichess API](https://liche
 Run `yarn build` and deploy the generated `dist/` directory to a static host. The host must
 serve `index.html` as the fallback for unknown paths so React Router routes can be loaded directly.
 
+Production deployments use the manually triggered `Deploy production` GitHub Actions workflow.
+The workflow accepts an optional commit SHA, verifies that it is reachable from `main`, runs the
+normal checks, and deploys that exact build artifact through the protected `production`
+environment.
+
+The environment requires these secrets:
+
+| Secret | Purpose |
+| --- | --- |
+| `DEPLOY_HOST` | Production server hostname or address |
+| `DEPLOY_USER` | Restricted SSH deployment account |
+| `DEPLOY_SSH_KEY` | Private key for the deployment account |
+| `DEPLOY_KNOWN_HOSTS` | Trusted SSH host-key entry |
+
+It also requires these variables:
+
+| Variable | Purpose |
+| --- | --- |
+| `DEPLOY_ROOT` | Absolute deployment root, such as `/srv/domainapp` |
+| `PRODUCTION_URL` | HTTPS production origin used for health checks |
+| `DEPLOY_PORT` | SSH port; optional and defaults to `22` |
+
+The server must have a pre-existing `releases/` directory beneath `DEPLOY_ROOT` and a `current`
+symlink pointing to a valid release. NGINX serves the `current` symlink. Deployments create an
+immutable commit-named release, switch `current` atomically, health-check the public production
+URL, and restore the previous release if that check fails. The active and immediately previous
+successful releases are retained.
+
 ## License
 
 No license has been added to this repository. All rights are reserved unless a license is added later.
