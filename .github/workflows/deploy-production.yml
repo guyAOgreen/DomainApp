@@ -23,6 +23,7 @@ jobs:
     outputs:
       commit: ${{ steps.resolve.outputs.commit }}
       artifact: ${{ steps.resolve.outputs.artifact }}
+      deployment-script-commit: ${{ steps.resolve.outputs.deployment-script-commit }}
 
     steps:
       - name: Check out main with history
@@ -40,9 +41,10 @@ jobs:
           set -Eeuo pipefail
 
           git fetch --no-tags origin main
+          deployment_script_commit="$(git rev-parse origin/main)"
 
           if [[ -z "$REQUESTED_COMMIT" ]]; then
-            commit="$(git rev-parse origin/main)"
+            commit="$deployment_script_commit"
           else
             if [[ ! "$REQUESTED_COMMIT" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
               echo "The requested commit must be a 7-40 character hexadecimal SHA." >&2
@@ -64,6 +66,7 @@ jobs:
           echo "Resolved deploy commit: $commit"
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
           echo "artifact=$artifact" >> "$GITHUB_OUTPUT"
+          echo "deployment-script-commit=$deployment_script_commit" >> "$GITHUB_OUTPUT"
 
           git checkout --detach "$commit"
 
@@ -106,14 +109,12 @@ jobs:
       url: ${{ vars.PRODUCTION_URL }}
     env:
       DEPLOY_COMMIT: ${{ needs.verify.outputs.commit }}
-      DEPLOY_ROOT: ${{ vars.DEPLOY_ROOT }}
-      PRODUCTION_URL: ${{ vars.PRODUCTION_URL }}
 
     steps:
       - name: Check out deployment script
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ needs.verify.outputs.deployment-script-commit }}
           sparse-checkout: .github/scripts
 
       - name: Download verified build
@@ -122,16 +123,70 @@ jobs:
           name: ${{ needs.verify.outputs.artifact }}
           path: dist
 
+      - name: Validate deployment configuration
+        env:
+          CONFIGURED_DEPLOY_PORT: ${{ vars.DEPLOY_PORT }}
+          CONFIGURED_DEPLOY_ROOT: ${{ vars.DEPLOY_ROOT }}
+          CONFIGURED_PRODUCTION_URL: ${{ vars.PRODUCTION_URL }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          deploy_port="${CONFIGURED_DEPLOY_PORT:-22}"
+          deploy_root="$CONFIGURED_DEPLOY_ROOT"
+          production_url="$CONFIGURED_PRODUCTION_URL"
+
+          while [[ "$deploy_root" == */ ]]; do
+            deploy_root="${deploy_root%/}"
+          done
+
+          while [[ "$production_url" == */ ]]; do
+            production_url="${production_url%/}"
+          done
+
+          if [[ ! "$deploy_port" =~ ^[0-9]{1,5}$ ]] || ((deploy_port < 1 || deploy_port > 65535)); then
+            echo "DEPLOY_PORT must be a valid TCP port when configured." >&2
+            exit 1
+          fi
+
+          if [[ ! "$deploy_root" =~ ^/[[:alnum:]_.-]+(/[[:alnum:]_.-]+)*$ ]]; then
+            echo "DEPLOY_ROOT must be a normalized absolute path." >&2
+            exit 1
+          fi
+
+          if [[ ! "$production_url" =~ ^https://[[:alnum:].-]+(:[0-9]{1,5})?$ ]]; then
+            echo "PRODUCTION_URL must be an HTTPS origin without a path." >&2
+            exit 1
+          fi
+
+          echo "DEPLOY_PORT=$deploy_port" >> "$GITHUB_ENV"
+          echo "DEPLOY_ROOT=$deploy_root" >> "$GITHUB_ENV"
+          echo "PRODUCTION_URL=$production_url" >> "$GITHUB_ENV"
+
       - name: Configure SSH
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
-          DEPLOY_PORT: ${{ vars.DEPLOY_PORT }}
         shell: bash
         run: |
           set -Eeuo pipefail
+
+          if [[ ! "$DEPLOY_HOST" =~ ^[[:alnum:].-]+$ ]]; then
+            echo "DEPLOY_HOST must be a hostname or address without a scheme." >&2
+            exit 1
+          fi
+
+          if [[ ! "$DEPLOY_USER" =~ ^[a-z_][a-z0-9_-]*$ ]]; then
+            echo "DEPLOY_USER must be a valid Linux account name." >&2
+            exit 1
+          fi
+
+          if [[ -z "$DEPLOY_SSH_KEY" || -z "$DEPLOY_KNOWN_HOSTS" ]]; then
+            echo "The deployment SSH key and known-hosts entry are required." >&2
+            exit 1
+          fi
 
           install -d -m 0700 "$HOME/.ssh"
           install -m 0600 /dev/null "$HOME/.ssh/id_ed25519"
@@ -161,17 +216,17 @@ jobs:
 
       - name: Upload release archive
         id: upload
-        env:
-          REMOTE_ARCHIVE: ${{ vars.DEPLOY_ROOT }}/.upload-${{ github.run_id }}-${{ github.run_attempt }}.tar.gz
         shell: bash
         run: |
           set -Eeuo pipefail
 
+          remote_archive="$DEPLOY_ROOT/.upload-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.tar.gz"
+
           scp \
             "domainapp-${DEPLOY_COMMIT}.tar.gz" \
-            "domainapp-production:${REMOTE_ARCHIVE}"
+            "domainapp-production:${remote_archive}"
 
-          echo "archive=$REMOTE_ARCHIVE" >> "$GITHUB_OUTPUT"
+          echo "archive=$remote_archive" >> "$GITHUB_OUTPUT"
 
       - name: Activate release
         env:
@@ -180,6 +235,12 @@ jobs:
         run: |
           set -Eeuo pipefail
 
-          ssh domainapp-production \
-            "bash -s -- '$DEPLOY_ROOT' '$DEPLOY_COMMIT' '$REMOTE_ARCHIVE' '$PRODUCTION_URL'" \
+          printf -v remote_command \
+            'bash -s -- %q %q %q %q' \
+            "$DEPLOY_ROOT" \
+            "$DEPLOY_COMMIT" \
+            "$REMOTE_ARCHIVE" \
+            "$PRODUCTION_URL"
+
+          ssh domainapp-production "$remote_command" \
             < .github/scripts/deploy-production.sh

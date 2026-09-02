@@ -7,18 +7,13 @@ if [[ $# -ne 4 ]]; then
   exit 2
 fi
 
-deploy_root="${1%/}"
+deploy_root="$(realpath -m -- "$1")"
 commit="$2"
-archive="$3"
+archive="$(realpath -m -- "$3")"
 production_url="${4%/}"
 
 if [[ ! "$deploy_root" =~ ^/[[:alnum:]_.-]+(/[[:alnum:]_.-]+)*$ ]]; then
   echo "Deployment root must be a normalized absolute path." >&2
-  exit 2
-fi
-
-if [[ ! "$commit" =~ ^[0-9a-f]{40}$ ]]; then
-  echo "Deployment commit must be a full lowercase SHA." >&2
   exit 2
 fi
 
@@ -27,29 +22,40 @@ if [[ "$archive" != "$deploy_root"/.upload-*.tar.gz ]]; then
   exit 2
 fi
 
-if [[ ! "$production_url" =~ ^https://[^/]+$ ]]; then
-  echo "Production URL must be an HTTPS origin without a path." >&2
-  exit 2
-fi
-
 release_root="$deploy_root/releases"
-new_release="$release_root/$commit"
+new_release=""
 current_link="$deploy_root/current"
 next_link="$deploy_root/.current-next"
 rollback_link="$deploy_root/.current-rollback"
-production_host="${production_url#https://}"
 activated=false
 created_release=false
 
 cleanup() {
   rm -f -- "$archive" "$next_link" "$rollback_link"
 
-  if [[ "$created_release" == true && "$activated" == false && -d "$new_release" ]]; then
+  if [[ \
+    -n "$new_release" && \
+    "$created_release" == true && \
+    "$activated" == false && \
+    -d "$new_release" \
+  ]]; then
     rm -rf -- "$new_release"
   fi
 }
 
 trap cleanup EXIT
+
+if [[ ! "$commit" =~ ^[0-9a-f]{40}$ ]]; then
+  echo "Deployment commit must be a full lowercase SHA." >&2
+  exit 2
+fi
+
+if [[ ! "$production_url" =~ ^https://[[:alnum:].-]+(:[0-9]{1,5})?$ ]]; then
+  echo "Production URL must be an HTTPS origin without a path." >&2
+  exit 2
+fi
+
+new_release="$release_root/$commit"
 
 if [[ ! -d "$release_root" || ! -L "$current_link" ]]; then
   echo "Deployment root has not been prepared for atomic releases." >&2
@@ -88,6 +94,7 @@ if [[ ! -f "$new_release/index.html" ]]; then
   exit 1
 fi
 
+rm -f -- "$next_link"
 ln -s "releases/$commit" "$next_link"
 mv -Tf -- "$next_link" "$current_link"
 activated=true
@@ -104,27 +111,30 @@ if ! curl \
   --retry-delay 2 \
   --connect-timeout 10 \
   --max-time 30 \
-  --resolve "$production_host:443:127.0.0.1" \
-  "$production_url/" \
+  "$production_url/?deployment=$commit" \
   > /dev/null; then
-  echo "Production health check failed; restoring $previous_release." >&2
+  echo "Production health check failed; attempting to restore $previous_release." >&2
 
-  ln -s "$previous_release" "$rollback_link"
-  mv -Tf -- "$rollback_link" "$current_link"
-  activated=false
+  if rm -f -- "$rollback_link" && \
+    ln -s "$previous_release" "$rollback_link" && \
+    mv -Tf -- "$rollback_link" "$current_link"; then
+    activated=false
+    echo "Rollback restored release: $previous_release" >&2
 
-  if curl \
-    --fail \
-    --silent \
-    --show-error \
-    --connect-timeout 10 \
-    --max-time 30 \
-    --resolve "$production_host:443:127.0.0.1" \
-    "$production_url/" \
-    > /dev/null; then
-    echo "Rollback health check passed: $previous_release" >&2
+    if curl \
+      --fail \
+      --silent \
+      --show-error \
+      --connect-timeout 10 \
+      --max-time 30 \
+      "$production_url/?rollback=${previous_release##*/}" \
+      > /dev/null; then
+      echo "Rollback health check passed: $previous_release" >&2
+    else
+      echo "Rollback health check failed: $previous_release" >&2
+    fi
   else
-    echo "Rollback health check also failed: $previous_release" >&2
+    echo "Rollback failed; active release remains $(readlink -f -- "$current_link")." >&2
   fi
 
   exit 1
