@@ -1,0 +1,185 @@
+name: Deploy production
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Commit SHA from main to deploy (defaults to the latest commit)
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      commit: ${{ steps.resolve.outputs.commit }}
+      artifact: ${{ steps.resolve.outputs.artifact }}
+
+    steps:
+      - name: Check out main with history
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Resolve deployable commit
+        id: resolve
+        env:
+          REQUESTED_COMMIT: ${{ inputs.commit }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          git fetch --no-tags origin main
+
+          if [[ -z "$REQUESTED_COMMIT" ]]; then
+            commit="$(git rev-parse origin/main)"
+          else
+            if [[ ! "$REQUESTED_COMMIT" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+              echo "The requested commit must be a 7-40 character hexadecimal SHA." >&2
+              exit 1
+            fi
+
+            commit="$(git rev-parse --verify "${REQUESTED_COMMIT}^{commit}")"
+          fi
+
+          if ! git merge-base --is-ancestor "$commit" origin/main; then
+            echo "Requested commit is not reachable from origin/main: $commit" >&2
+            exit 1
+          fi
+
+          commit="${commit,,}"
+          artifact="domainapp-${commit}"
+
+          echo "Requested commit: ${REQUESTED_COMMIT:-latest origin/main}"
+          echo "Resolved deploy commit: $commit"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          echo "artifact=$artifact" >> "$GITHUB_OUTPUT"
+
+          git checkout --detach "$commit"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22.22.2
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Check formatting
+        run: yarn prettify
+
+      - name: Check accessibility lint
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
+
+      - name: Build application
+        run: yarn build
+
+      - name: Upload verified build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ steps.resolve.outputs.artifact }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    name: Deploy verified build
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: production
+      url: ${{ vars.PRODUCTION_URL }}
+    env:
+      DEPLOY_COMMIT: ${{ needs.verify.outputs.commit }}
+      DEPLOY_ROOT: ${{ vars.DEPLOY_ROOT }}
+      PRODUCTION_URL: ${{ vars.PRODUCTION_URL }}
+
+    steps:
+      - name: Check out deployment script
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ github.sha }}
+          sparse-checkout: .github/scripts
+
+      - name: Download verified build
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ${{ needs.verify.outputs.artifact }}
+          path: dist
+
+      - name: Configure SSH
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          install -d -m 0700 "$HOME/.ssh"
+          install -m 0600 /dev/null "$HOME/.ssh/id_ed25519"
+          install -m 0600 /dev/null "$HOME/.ssh/known_hosts"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+
+          cat > "$HOME/.ssh/config" <<EOF
+          Host domainapp-production
+            HostName $DEPLOY_HOST
+            User $DEPLOY_USER
+            Port $DEPLOY_PORT
+            IdentityFile $HOME/.ssh/id_ed25519
+            IdentitiesOnly yes
+            BatchMode yes
+            StrictHostKeyChecking yes
+            UserKnownHostsFile $HOME/.ssh/known_hosts
+          EOF
+
+          chmod 0600 "$HOME/.ssh/config"
+          ssh-keygen -y -f "$HOME/.ssh/id_ed25519" > /dev/null
+          ssh domainapp-production true
+
+      - name: Package verified build
+        shell: bash
+        run: tar -C dist -czf "domainapp-${DEPLOY_COMMIT}.tar.gz" .
+
+      - name: Upload release archive
+        id: upload
+        env:
+          REMOTE_ARCHIVE: ${{ vars.DEPLOY_ROOT }}/.upload-${{ github.run_id }}-${{ github.run_attempt }}.tar.gz
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          scp \
+            "domainapp-${DEPLOY_COMMIT}.tar.gz" \
+            "domainapp-production:${REMOTE_ARCHIVE}"
+
+          echo "archive=$REMOTE_ARCHIVE" >> "$GITHUB_OUTPUT"
+
+      - name: Activate release
+        env:
+          REMOTE_ARCHIVE: ${{ steps.upload.outputs.archive }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          ssh domainapp-production \
+            "bash -s -- '$DEPLOY_ROOT' '$DEPLOY_COMMIT' '$REMOTE_ARCHIVE' '$PRODUCTION_URL'" \
+            < .github/scripts/deploy-production.sh
