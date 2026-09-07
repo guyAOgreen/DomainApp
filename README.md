@@ -63,7 +63,7 @@ The site will be available at [http://localhost:5173](http://localhost:5173).
 
 ```text
 src/
-├── assets/       Images, GIFs, and the downloadable CV
+├── assets/       Images and GIFs
 ├── components/   Shared navigation, social, loading, and tab components
 ├── constants/    Shared application constants
 ├── pages/        Home, About Me, CV, and Chess routes
@@ -73,6 +73,30 @@ src/
 ## External data
 
 The chess page requests recent public games from the [Lichess API](https://lichess.org/api). If the API is unavailable, that page may not be able to display recent games.
+
+### Updating the CV
+
+The viewer and PDF links use the public OCI URL in `src/constants/assetConstants.ts`.
+The browser opens the PDF directly; visitors save it with their browser's download or share controls.
+The URL is public and contains no OCI credentials or pre-authenticated request token.
+
+To update the CV, first save the current PDF outside the repository as a rollback copy. In OCI,
+select the Johannesburg bucket `domainapp-public-assets` (namespace `ax1xpn4rr6se`, compartment
+`MyDomain`) and upload the new `GuyGreenCV.pdf` with the `cv/` prefix from the bucket root.
+Confirm the overwrite using Standard storage and these response headers:
+
+| Header | Value |
+| --- | --- |
+| `Content-Type` | `application/pdf` (verify the type assigned by the Console after upload) |
+| `Cache-Control` | `public, max-age=300, must-revalidate` |
+| `Content-Disposition` | `inline; filename="GuyGreenCV.pdf"` |
+
+Keep the same object name and reapply the headers on every upload. Verify the public PDF opens
+and compare its content with the site's HTML CV and biographical pages. The cache policy allows
+up to five minutes of cached content before a subsequent request revalidates; an already-open
+viewer or saved copy does not refresh itself. Replacing the object needs no application build
+or deployment. To roll back, re-upload the saved PDF at the same key with the same headers and
+verify it again; the same cache window applies.
 
 ## Deployment
 

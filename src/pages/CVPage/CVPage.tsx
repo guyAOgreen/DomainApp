@@ -1,5 +1,5 @@
 import React from "react";
-import cvUrl from "../../assets/cv/GuyGreenCV.pdf";
+import { cvPdfUrl } from "../../constants/assetConstants";
 
 const CvPage: React.FC = () => {
   return (
@@ -10,12 +10,12 @@ const CvPage: React.FC = () => {
       <section className="max-w-4xl mx-auto my-12">
         <h2 className="text-3xl font-semibold mb-6 text-center">Download or View My CV</h2>
         <div className="border rounded-lg overflow-hidden shadow-lg">
-          <iframe src={cvUrl} className="h-[80vh] min-h-96 w-full" title="Guy Green CV" />
+          <iframe src={cvPdfUrl} className="h-[80vh] min-h-96 w-full" title="Guy Green CV" />
         </div>
         <p className="mt-4 text-center text-sm text-gray-700 dark:text-gray-300">
           If the preview does not load,{" "}
           <a
-            href={cvUrl}
+            href={cvPdfUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-blue-700 underline dark:text-blue-300"
@@ -35,12 +35,17 @@ const CvPage: React.FC = () => {
         </p>
         <div className="mt-4 text-center">
           <a
-            href={cvUrl}
-            download
-            className="px-6 py-3 bg-blue-700 text-white font-semibold rounded-lg shadow hover:bg-blue-800 transition"
+            href={cvPdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open or download CV (PDF) (opens in a new tab)"
+            className="inline-block px-6 py-3 bg-blue-700 text-white font-semibold rounded-lg shadow hover:bg-blue-800 transition"
           >
-            Download CV (PDF)
+            Open or download CV (PDF)
           </a>
+          <p className="mt-3 text-sm text-gray-700 dark:text-gray-300">
+            Use your browser’s download or share controls to save a copy.
+          </p>
         </div>
       </section>
 
