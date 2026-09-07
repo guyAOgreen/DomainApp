@@ -1,9 +1,29 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import galleryManifest from "../../testUtils/gallery.json";
 import AboutMePage from "./AboutMePage";
 
+const fetchMock = vi.fn<typeof fetch>();
+const expectedBaseUrl =
+  "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/";
+const renderPage = () =>
+  render(
+    <MemoryRouter>
+      <AboutMePage />
+    </MemoryRouter>
+  );
+
 describe("AboutMePage", () => {
+  beforeEach(() => {
+    fetchMock.mockReset().mockImplementation(() => new Promise(() => undefined));
+    vi.stubGlobal("fetch", fetchMock);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it("connects Guy's professional background, product work, and interests", () => {
     render(
       <MemoryRouter>
@@ -29,6 +49,7 @@ describe("AboutMePage", () => {
   });
 
   it("presents the snapshots as an autoplaying album without cropping the photos", async () => {
+    fetchMock.mockResolvedValue(new Response(JSON.stringify(galleryManifest)));
     const user = userEvent.setup();
     render(
       <MemoryRouter>
@@ -36,7 +57,7 @@ describe("AboutMePage", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("button", { name: "Previous image" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Previous image" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Next image" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Pause slideshow" })).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "Choose a personal snapshot" })).toBeInTheDocument();
@@ -51,5 +72,105 @@ describe("AboutMePage", () => {
     expect(
       screen.getByRole("img", { name: "Guy with Peter Lékó at a Cape Town Chess event" })
     ).toHaveClass("object-contain");
+  });
+
+  it("announces loading while keeping the biography available", () => {
+    renderPage();
+
+    expect(screen.getByRole("status")).toHaveTextContent("Loading photos…");
+    expect(screen.getByRole("heading", { name: "Software and product" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Next image" })).not.toBeInTheDocument();
+  });
+
+  it("uses manifest order, labels, descriptions, and safely resolved object paths", async () => {
+    const user = userEvent.setup();
+    const portrait = {
+      ...galleryManifest.images[7],
+      label: "Chess",
+      src: "about-me/images/profile.jpg",
+    };
+    const beach = galleryManifest.images[0];
+    fetchMock.mockResolvedValue(new Response(JSON.stringify({ images: [portrait, beach] })));
+    renderPage();
+
+    expect(await screen.findByRole("img", { name: portrait.alt })).toHaveAttribute(
+      "src",
+      `${expectedBaseUrl}about-me/images/profile.jpg`
+    );
+    expect(screen.getByText("Chess")).toBeInTheDocument();
+    expect(screen.getByText(portrait.caption)).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(`Image 1 of 2: ${portrait.alt}`);
+    await user.click(screen.getByRole("button", { name: "Next image" }));
+    expect(screen.getByRole("img", { name: beach.alt })).toHaveAttribute("src", beach.src);
+    expect(screen.getByText(beach.caption)).toBeInTheDocument();
+    expect(screen.queryByText("Chess")).not.toBeInTheDocument();
+  });
+
+  it("announces an empty gallery", async () => {
+    fetchMock.mockResolvedValue(new Response(JSON.stringify({ images: [] })));
+    renderPage();
+
+    expect(await screen.findByText("No photos are available yet.")).toHaveAttribute(
+      "role",
+      "status"
+    );
+    expect(screen.queryByRole("button", { name: "Next image" })).not.toBeInTheDocument();
+  });
+
+  it("lets visitors retry a network failure", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockRejectedValueOnce(new TypeError("Network unavailable"));
+    renderPage();
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Photos could not be loaded.");
+    expect(screen.getByRole("heading", { name: "Beyond Code" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Try again" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Loading photos…");
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("recovers from a failed request when retry succeeds", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockResolvedValueOnce(new Response("Unavailable", { status: 503 }));
+    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(galleryManifest)));
+    renderPage();
+
+    await user.click(await screen.findByRole("button", { name: "Try again" }));
+    expect(
+      await screen.findByRole("img", { name: galleryManifest.images[0].alt })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("handles a response that is not valid JSON", async () => {
+    fetchMock.mockResolvedValue(new Response("{broken JSON"));
+    renderPage();
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Photos could not be loaded.");
+  });
+
+  it("shows an error for malformed entries while keeping the biography available", async () => {
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ images: [{ ...galleryManifest.images[0], alt: "" }] }))
+    );
+    renderPage();
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Photos could not be loaded.");
+    expect(screen.getByRole("heading", { name: "Beyond Code" })).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Image album" })).not.toBeInTheDocument();
+  });
+
+  it("shows an error instead of displaying an unsafe image destination", async () => {
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          images: [{ ...galleryManifest.images[0], src: "https://example.com/photo.jpg" }],
+        })
+      )
+    );
+    renderPage();
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Photos could not be loaded.");
+    expect(screen.queryByRole("region", { name: "Image album" })).not.toBeInTheDocument();
   });
 });

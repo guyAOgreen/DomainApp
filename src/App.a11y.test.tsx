@@ -3,6 +3,16 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, vi } from "vitest";
 import App from "./App";
 import { expectNoAxeViolations } from "./testUtils/axe";
+import galleryManifest from "./testUtils/gallery.json";
+
+beforeEach(() => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(() => Promise.resolve(new Response(JSON.stringify(galleryManifest))))
+  );
+});
+
+afterEach(() => vi.unstubAllGlobals());
 
 vi.mock("axios", () => ({
   default: {
@@ -19,6 +29,9 @@ const renderRoute = (route: string) => {
 describe("accessibility", () => {
   it.each(["/", "/about-me", "/projects", "/cv"])("has no axe violations on %s", async (route) => {
     const { container } = renderRoute(route);
+    if (route === "/about-me") {
+      await screen.findByRole("group", { name: "Choose a personal snapshot" });
+    }
 
     await expectNoAxeViolations(container);
   });

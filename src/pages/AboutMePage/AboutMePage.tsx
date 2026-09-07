@@ -1,57 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import image1 from "../../assets/images/1.jpeg";
-import image2 from "../../assets/images/2.jpeg";
-import image3 from "../../assets/images/3.jpeg";
-import image4 from "../../assets/images/4.jpeg";
-import image5 from "../../assets/images/5.jpeg";
-import image6 from "../../assets/images/6.jpeg";
-import image7 from "../../assets/images/7.jpeg";
-import profileImage from "../../assets/images/profile.jpg";
 import ImageAlbum from "../../components/ImageAlbum/ImageAlbum";
 import { appRoutes } from "../../constants/routeConstants";
-
-const galleryImages = [
-  {
-    src: image1,
-    alt: "Guy on a beach at sunset with mountains in the distance",
-    caption: "Sunset on the Cape Town coast.",
-  },
-  { src: image2, alt: "Guy beside a decorated Christmas tree", caption: "Christmas at home." },
-  {
-    src: image3,
-    alt: "Guy taking an outdoor selfie while wearing a red visor",
-    caption: "Out for a sunny run.",
-  },
-  {
-    src: image4,
-    alt: "Guy smiling in an airport while wearing a striped jacket",
-    caption: "Ready for the next trip.",
-  },
-  {
-    src: image5,
-    alt: "Guy standing on an indoor padel court",
-    caption: "On court for a game of padel.",
-  },
-  {
-    src: image6,
-    alt: "Guy pointing to his name and best previous Cape Town Marathon time on a runners' board",
-    caption:
-      "The board records my previous Cape Town Marathons; I’m pointing out my name and best time.",
-  },
-  {
-    src: image7,
-    alt: "Guy with Peter Lékó at a Cape Town Chess event",
-    caption: "With Grandmaster Peter Lékó at a Cape Town Chess event.",
-  },
-  {
-    src: profileImage,
-    alt: "Guy playing chess at a tournament",
-    caption: "Over the board at a chess tournament.",
-  },
-];
+import { useGallery } from "../../hooks/useGallery";
 
 const AboutMePage: React.FC = () => {
+  const { state: gallery, retry } = useGallery();
+
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-20 text-gray-900 dark:bg-gray-900 dark:text-white md:px-20">
       <header className="mx-auto mb-12 max-w-4xl text-center">
@@ -120,11 +75,37 @@ const AboutMePage: React.FC = () => {
             A few snapshots of my life
           </h2>
         </div>
-        <ImageAlbum
-          images={galleryImages}
-          thumbnailsLabel="Choose a personal snapshot"
-          autoplayInterval={8000}
-        />
+        {gallery.status === "loading" && (
+          <p role="status" className="py-12 text-center text-gray-700 dark:text-gray-300">
+            Loading photos…
+          </p>
+        )}
+        {gallery.status === "error" && (
+          <div className="py-12 text-center">
+            <p role="alert" className="text-gray-700 dark:text-gray-300">
+              Photos could not be loaded.
+            </p>
+            <button
+              type="button"
+              onClick={retry}
+              className="mt-4 rounded-lg bg-blue-700 px-4 py-2 font-semibold text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+            >
+              Try again
+            </button>
+          </div>
+        )}
+        {gallery.status === "success" &&
+          (gallery.images.length === 0 ? (
+            <p role="status" className="py-12 text-center text-gray-700 dark:text-gray-300">
+              No photos are available yet.
+            </p>
+          ) : (
+            <ImageAlbum
+              images={gallery.images}
+              thumbnailsLabel="Choose a personal snapshot"
+              autoplayInterval={8000}
+            />
+          ))}
       </section>
     </div>
   );
