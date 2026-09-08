@@ -17,7 +17,7 @@ const CvPage: React.FC = () => {
   const pdfPreviewRef = React.useRef<HTMLDetailsElement>(null);
 
   return (
-    <div className="mx-auto max-w-5xl bg-gray-50 px-4 py-10 text-gray-900 md:px-10 md:py-14 dark:bg-gray-900 dark:text-white">
+    <div className="mx-auto min-h-screen max-w-5xl bg-gray-50 px-4 py-10 text-gray-900 md:px-10 md:py-14 dark:bg-gray-900 dark:text-white">
       <header className="mb-10 flex flex-col gap-6 border-b border-gray-200 pb-8 lg:flex-row lg:items-start lg:justify-between dark:border-gray-700">
         <div>
           <h1 className="mb-3 text-4xl font-extrabold md:text-5xl">Curriculum Vitae</h1>
