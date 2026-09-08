@@ -187,6 +187,19 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: "Professional Experience" })).toBeVisible();
   });
 
+  it("restores the PDF preview when the bookmarked CV route is loaded again", async () => {
+    const firstVisit = renderRoute("/cv#cv-preview");
+    await screen.findByTitle("Guy Green CV");
+    const savedUrl = window.location.pathname + window.location.hash;
+    firstVisit.unmount();
+
+    renderRoute(savedUrl);
+
+    expect(await screen.findByTitle("Guy Green CV")).toBeVisible();
+    expect(screen.getByText("Preview CV (PDF)").closest("details")).toHaveAttribute("open");
+    expect(screen.getByRole("heading", { name: "Professional Experience" })).toBeVisible();
+  });
+
   it("lets visitors browse the accessible FootyBru product album", async () => {
     const user = userEvent.setup();
     renderRoute("/projects");

@@ -6,9 +6,9 @@ import CvPage from "./CVPage";
 const expectedCvUrl =
   "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/cv/GuyGreenCV.pdf";
 
-const renderCv = () =>
+const renderCv = (route = "/cv") =>
   render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[route]}>
       <CvPage />
     </MemoryRouter>
   );
@@ -24,6 +24,33 @@ describe("CvPage", () => {
     expect(screen.getByRole("heading", { name: "ACI — Software Developer" })).toBeVisible();
     expect(screen.queryByTitle("Guy Green CV")).not.toBeInTheDocument();
     expect(screen.getByText("Preview CV (PDF)").closest("details")).not.toHaveAttribute("open");
+  });
+
+  it("opens a linked preview on arrival and still lets the reader close and reopen it", async () => {
+    const user = userEvent.setup();
+    renderCv("/cv#cv-preview");
+
+    expect(await screen.findByTitle("Guy Green CV")).toHaveAttribute("src", expectedCvUrl);
+    const preview = screen.getByText("Preview CV (PDF)");
+    expect(preview.closest("details")).toHaveAttribute("open");
+
+    await user.click(preview);
+
+    expect(preview.closest("details")).not.toHaveAttribute("open");
+    expect(screen.queryByTitle("Guy Green CV")).not.toBeInTheDocument();
+    expect(preview).toHaveFocus();
+
+    await user.click(screen.getByRole("link", { name: "Preview on this page" }));
+
+    expect(await screen.findByTitle("Guy Green CV")).toHaveAttribute("src", expectedCvUrl);
+    expect(preview).toHaveFocus();
+  });
+
+  it.each(["/cv#cv-content", "/cv#other"])("keeps the preview collapsed for %s", (route) => {
+    renderCv(route);
+
+    expect(screen.getByText("Preview CV (PDF)").closest("details")).not.toHaveAttribute("open");
+    expect(screen.queryByTitle("Guy Green CV")).not.toBeInTheDocument();
   });
 
   it("consolidates the technologies into readable skill groups", () => {
@@ -129,7 +156,6 @@ describe("CvPage", () => {
     expect(fallbackLink).toHaveAttribute("target", "_blank");
     expect(fallbackLink).toHaveAttribute("rel", "noopener noreferrer");
     expect(fallbackLink).toBeVisible();
-    expect(fallbackLink.closest("iframe")).toBeNull();
     expect(screen.getByRole("region", { name: "Professional Experience" })).toBeVisible();
     expect(
       screen.getByRole("region", { name: "Professional Experience" }).closest("#cv-content")

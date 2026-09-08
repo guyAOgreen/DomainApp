@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cvPdfUrl } from "../../constants/assetConstants";
 import { appRoutes } from "../../constants/routeConstants";
 
@@ -13,8 +13,22 @@ const skillGroups = [
 ];
 
 const CvPage: React.FC = () => {
+  const { hash } = useLocation();
   const [showPdfPreview, setShowPdfPreview] = React.useState(false);
   const pdfPreviewRef = React.useRef<HTMLDetailsElement>(null);
+
+  React.useEffect(() => {
+    if (hash === "#cv-preview" && pdfPreviewRef.current) {
+      pdfPreviewRef.current.open = true;
+    }
+  }, [hash]);
+
+  React.useEffect(() => {
+    if (hash === "#cv-preview" && showPdfPreview) {
+      // Wait for the iframe to render so scrolling can reach the expanded preview.
+      pdfPreviewRef.current?.querySelector("summary")?.scrollIntoView();
+    }
+  }, [hash, showPdfPreview]);
 
   return (
     <div className="mx-auto min-h-screen max-w-5xl bg-gray-50 px-4 py-10 text-gray-900 md:px-10 md:py-14 dark:bg-gray-900 dark:text-white">

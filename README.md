@@ -77,8 +77,9 @@ The chess page requests recent public games from the [Lichess API](https://liche
 
 ### Updating the CV
 
-The CV page presents the web résumé first. The optional PDF preview is collapsed initially and
-only loads the document when opened. Above the résumé, visitors can open the PDF in a new tab or
+The CV page presents the web résumé first. The PDF preview is collapsed on ordinary visits and
+loads the document only when opened. Visiting `/cv#cv-preview` opens it automatically, including
+after a reload. Above the résumé, visitors can open the PDF in a new tab or
 follow a link that opens the on-page preview. An additional fallback link remains inside the preview.
 
 The viewer and PDF links use the public OCI URL in `src/constants/assetConstants.ts`.
