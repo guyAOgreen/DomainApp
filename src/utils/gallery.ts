@@ -68,15 +68,21 @@ const parseGalleryManifest = (data: unknown): ImageAlbumItem[] => {
 };
 
 export const fetchGallery = async (signal: AbortSignal): Promise<ImageAlbumItem[]> => {
-  const timeoutController = new AbortController();
-  const requestSignal = AbortSignal.any([signal, timeoutController.signal]);
+  const requestController = new AbortController();
+  // Forward cancellation without AbortSignal.any so older Safari can load the gallery.
+  const abortFromCaller = () => requestController.abort(signal.reason);
+  if (signal.aborted) {
+    abortFromCaller();
+  } else {
+    signal.addEventListener("abort", abortFromCaller, { once: true });
+  }
   const timeoutId = window.setTimeout(() => {
-    timeoutController.abort(new DOMException("Gallery request timed out.", "TimeoutError"));
+    requestController.abort(new DOMException("Gallery request timed out.", "TimeoutError"));
   }, 15_000);
 
   try {
     const response = await fetch(galleryManifestUrl, {
-      signal: requestSignal,
+      signal: requestController.signal,
       credentials: "omit",
     });
     if (!response.ok) {
@@ -86,5 +92,6 @@ export const fetchGallery = async (signal: AbortSignal): Promise<ImageAlbumItem[
     return parseGalleryManifest(data);
   } finally {
     window.clearTimeout(timeoutId);
+    signal.removeEventListener("abort", abortFromCaller);
   }
 };

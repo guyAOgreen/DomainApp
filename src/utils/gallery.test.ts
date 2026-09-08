@@ -32,6 +32,24 @@ describe("fetchGallery", () => {
     });
   });
 
+  it("loads the gallery when AbortSignal.any is unavailable", async () => {
+    const descriptor = Object.getOwnPropertyDescriptor(AbortSignal, "any");
+    Object.defineProperty(AbortSignal, "any", { configurable: true, value: undefined });
+    respondWith(galleryManifest);
+
+    try {
+      await expect(fetchGallery(new AbortController().signal)).resolves.toEqual(
+        galleryManifest.images
+      );
+    } finally {
+      if (descriptor) {
+        Object.defineProperty(AbortSignal, "any", descriptor);
+      } else {
+        Reflect.deleteProperty(AbortSignal, "any");
+      }
+    }
+  });
+
   it.each(["headers", "body"])("times out while waiting for response %s", async (phase) => {
     vi.useFakeTimers();
     fetchMock.mockImplementation((_url, options) => {
@@ -84,13 +102,31 @@ describe("fetchGallery", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
-  it("clears the deadline after successfully reading the manifest", async () => {
+  it("preserves cancellation when the caller signal is already aborted", async () => {
     vi.useFakeTimers();
-    respondWith(galleryManifest);
+    fetchMock.mockImplementation((_url, options) => {
+      if (options?.signal?.aborted) return Promise.reject(options.signal.reason);
+      return Promise.resolve(new Response(JSON.stringify(galleryManifest)));
+    });
+    const controller = new AbortController();
+    const reason = new DOMException("Gallery is no longer needed.", "AbortError");
+    controller.abort(reason);
 
-    await fetchGallery(new AbortController().signal);
+    await expect(fetchGallery(controller.signal)).rejects.toBe(reason);
 
     expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("clears the deadline and detaches caller cancellation after reading the manifest", async () => {
+    vi.useFakeTimers();
+    respondWith(galleryManifest);
+    const controller = new AbortController();
+
+    await fetchGallery(controller.signal);
+    controller.abort();
+
+    expect(vi.getTimerCount()).toBe(0);
+    expect(fetchMock.mock.calls[0]?.[1]?.signal?.aborted).toBe(false);
   });
 
   it("resolves relative paths and preserves ordering, labels, and full bucket URLs", async () => {
