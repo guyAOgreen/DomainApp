@@ -68,10 +68,23 @@ const parseGalleryManifest = (data: unknown): ImageAlbumItem[] => {
 };
 
 export const fetchGallery = async (signal: AbortSignal): Promise<ImageAlbumItem[]> => {
-  const response = await fetch(galleryManifestUrl, { signal, credentials: "omit" });
-  if (!response.ok) {
-    throw new Error("Gallery request failed.");
+  const timeoutController = new AbortController();
+  const requestSignal = AbortSignal.any([signal, timeoutController.signal]);
+  const timeoutId = window.setTimeout(() => {
+    timeoutController.abort(new DOMException("Gallery request timed out.", "TimeoutError"));
+  }, 15_000);
+
+  try {
+    const response = await fetch(galleryManifestUrl, {
+      signal: requestSignal,
+      credentials: "omit",
+    });
+    if (!response.ok) {
+      throw new Error("Gallery request failed.");
+    }
+    const data: unknown = await response.json();
+    return parseGalleryManifest(data);
+  } finally {
+    window.clearTimeout(timeoutId);
   }
-  const data: unknown = await response.json();
-  return parseGalleryManifest(data);
 };

@@ -5,7 +5,22 @@ import { appRoutes } from "../../constants/routeConstants";
 import { useGallery } from "../../hooks/useGallery";
 
 const AboutMePage: React.FC = () => {
-  const { state: gallery, retry } = useGallery();
+  const { state: gallery, retry, isRetrying } = useGallery();
+  const galleryHeading = React.useRef<HTMLHeadingElement>(null);
+  const retryButton = React.useRef<HTMLButtonElement | null>(null);
+  const setRetryButton = React.useCallback((button: HTMLButtonElement | null) => {
+    // Ref cleanup runs before removing the control, while its focus can still be checked.
+    if (!button && retryButton.current === document.activeElement) {
+      galleryHeading.current?.focus();
+    }
+    retryButton.current = button;
+  }, []);
+  const hasPhotos = gallery.status === "success" && gallery.images.length > 0;
+  const statusMessage = {
+    loading: isRetrying ? "Retrying photos…" : "Loading photos…",
+    error: "Photos could not be loaded.",
+    success: hasPhotos ? "Photos loaded." : "No photos are available yet.",
+  }[gallery.status];
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-20 text-gray-900 dark:bg-gray-900 dark:text-white md:px-20">
@@ -71,41 +86,45 @@ const AboutMePage: React.FC = () => {
 
       <section className="mx-auto max-w-6xl" aria-labelledby="photo-gallery-heading">
         <div className="mb-6 text-center">
-          <h2 id="photo-gallery-heading" className="text-3xl font-semibold">
+          <h2
+            ref={galleryHeading}
+            id="photo-gallery-heading"
+            tabIndex={-1}
+            className="text-3xl font-semibold focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-700 dark:focus-visible:outline-blue-300"
+          >
             A few snapshots of my life
           </h2>
         </div>
-        {gallery.status === "loading" && (
-          <p role="status" className="py-12 text-center text-gray-700 dark:text-gray-300">
-            Loading photos…
-          </p>
-        )}
-        {gallery.status === "error" && (
-          <div className="py-12 text-center">
-            <p role="alert" className="text-gray-700 dark:text-gray-300">
-              Photos could not be loaded.
-            </p>
+        <p
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className={hasPhotos ? "sr-only" : "py-12 text-center text-gray-700 dark:text-gray-300"}
+        >
+          {statusMessage}
+        </p>
+        {(gallery.status === "error" || isRetrying) && (
+          <div className="pb-12 text-center">
             <button
+              ref={setRetryButton}
               type="button"
-              onClick={retry}
-              className="mt-4 rounded-lg bg-blue-700 px-4 py-2 font-semibold text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+              aria-disabled={isRetrying}
+              onClick={() => {
+                if (gallery.status === "error") retry();
+              }}
+              className="rounded-lg bg-blue-700 px-4 py-2 font-semibold text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 aria-disabled:cursor-wait"
             >
-              Try again
+              {isRetrying ? "Retrying…" : "Try again"}
             </button>
           </div>
         )}
-        {gallery.status === "success" &&
-          (gallery.images.length === 0 ? (
-            <p role="status" className="py-12 text-center text-gray-700 dark:text-gray-300">
-              No photos are available yet.
-            </p>
-          ) : (
-            <ImageAlbum
-              images={gallery.images}
-              thumbnailsLabel="Choose a personal snapshot"
-              autoplayInterval={8000}
-            />
-          ))}
+        {gallery.status === "success" && hasPhotos && (
+          <ImageAlbum
+            images={gallery.images}
+            thumbnailsLabel="Choose a personal snapshot"
+            autoplayInterval={8000}
+          />
+        )}
       </section>
     </div>
   );

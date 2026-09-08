@@ -19,6 +19,7 @@ describe("useGallery", () => {
     const { result } = renderHook(() => useGallery());
 
     expect(result.current.state).toEqual({ status: "loading" });
+    expect(result.current.isRetrying).toBe(false);
     await act(async () => request.resolve(galleryManifest.images));
 
     expect(result.current.state).toEqual({ status: "success", images: galleryManifest.images });
@@ -48,9 +49,11 @@ describe("useGallery", () => {
     act(() => result.current.retry());
 
     expect(result.current.state).toEqual({ status: "loading" });
+    expect(result.current.isRetrying).toBe(true);
     expect(fetchGalleryMock).toHaveBeenCalledTimes(2);
     await act(async () => retryRequest.resolve(galleryManifest.images));
     expect(result.current.state).toEqual({ status: "success", images: galleryManifest.images });
+    expect(result.current.isRetrying).toBe(false);
   });
 
   it("aborts the pending request when the hook unmounts", () => {

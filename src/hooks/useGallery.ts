@@ -34,5 +34,5 @@ export const useGallery = () => {
     setAttempt((previous) => previous + 1);
   };
 
-  return { state, retry };
+  return { state, retry, isRetrying: state.status === "loading" && attempt > 0 };
 };

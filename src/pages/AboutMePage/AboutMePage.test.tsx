@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import galleryManifest from "../../testUtils/gallery.json";
@@ -21,6 +21,7 @@ describe("AboutMePage", () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.unstubAllGlobals();
   });
 
@@ -99,7 +100,9 @@ describe("AboutMePage", () => {
     );
     expect(screen.getByText("Chess")).toBeInTheDocument();
     expect(screen.getByText(portrait.caption)).toBeInTheDocument();
-    expect(screen.getByRole("status")).toHaveTextContent(`Image 1 of 2: ${portrait.alt}`);
+    expect(
+      within(screen.getByRole("region", { name: "Image album" })).getByRole("status")
+    ).toHaveTextContent(`Image 1 of 2: ${portrait.alt}`);
     await user.click(screen.getByRole("button", { name: "Next image" }));
     expect(screen.getByRole("img", { name: beach.alt })).toHaveAttribute("src", beach.src);
     expect(screen.getByText(beach.caption)).toBeInTheDocument();
@@ -122,10 +125,13 @@ describe("AboutMePage", () => {
     fetchMock.mockRejectedValueOnce(new TypeError("Network unavailable"));
     renderPage();
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Photos could not be loaded.");
+    expect(await screen.findByText("Photos could not be loaded.")).toHaveAttribute(
+      "role",
+      "status"
+    );
     expect(screen.getByRole("heading", { name: "Beyond Code" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Try again" }));
-    expect(screen.getByRole("status")).toHaveTextContent("Loading photos…");
+    expect(screen.getByRole("status")).toHaveTextContent("Retrying photos…");
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
@@ -139,14 +145,17 @@ describe("AboutMePage", () => {
     expect(
       await screen.findByRole("img", { name: galleryManifest.images[0].alt })
     ).toBeInTheDocument();
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(screen.queryByText("Photos could not be loaded.")).not.toBeInTheDocument();
   });
 
   it("handles a response that is not valid JSON", async () => {
     fetchMock.mockResolvedValue(new Response("{broken JSON"));
     renderPage();
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Photos could not be loaded.");
+    expect(await screen.findByText("Photos could not be loaded.")).toHaveAttribute(
+      "role",
+      "status"
+    );
   });
 
   it("shows an error for malformed entries while keeping the biography available", async () => {
@@ -155,7 +164,10 @@ describe("AboutMePage", () => {
     );
     renderPage();
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Photos could not be loaded.");
+    expect(await screen.findByText("Photos could not be loaded.")).toHaveAttribute(
+      "role",
+      "status"
+    );
     expect(screen.getByRole("heading", { name: "Beyond Code" })).toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "Image album" })).not.toBeInTheDocument();
   });
@@ -170,7 +182,111 @@ describe("AboutMePage", () => {
     );
     renderPage();
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Photos could not be loaded.");
+    expect(await screen.findByText("Photos could not be loaded.")).toHaveAttribute(
+      "role",
+      "status"
+    );
     expect(screen.queryByRole("region", { name: "Image album" })).not.toBeInTheDocument();
+  });
+  it("keeps the retry control focused and blocks repeated activation during loading", async () => {
+    const user = userEvent.setup();
+    const response = Promise.withResolvers<Response>();
+    fetchMock.mockRejectedValueOnce(new TypeError("Network unavailable"));
+    fetchMock.mockReturnValueOnce(response.promise);
+    renderPage();
+    const retryButton = await screen.findByRole("button", { name: "Try again" });
+    retryButton.focus();
+
+    await user.keyboard("{Enter}");
+
+    expect(screen.getByRole("button", { name: "Retrying…" })).toBe(retryButton);
+    expect(retryButton).toHaveFocus();
+    expect(retryButton).toHaveAttribute("aria-disabled", "true");
+    expect(retryButton).not.toBeDisabled();
+    await user.keyboard("{Enter} ");
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+
+    await act(async () => response.resolve(new Response("Unavailable", { status: 503 })));
+    expect(screen.getByRole("button", { name: "Try again" })).toBe(retryButton);
+    expect(retryButton).toHaveFocus();
+    expect(retryButton).toHaveAttribute("aria-disabled", "false");
+  });
+
+  it.each([
+    ["photos", galleryManifest],
+    ["an empty gallery", { images: [] }],
+  ])(
+    "moves focus to the gallery heading after a keyboard retry loads %s",
+    async (_description, manifest) => {
+      const user = userEvent.setup();
+      const response = Promise.withResolvers<Response>();
+      fetchMock.mockRejectedValueOnce(new TypeError("Network unavailable"));
+      fetchMock.mockReturnValueOnce(response.promise);
+      renderPage();
+      const retryButton = await screen.findByRole("button", { name: "Try again" });
+      retryButton.focus();
+      await user.keyboard("{Enter}");
+
+      await act(async () => response.resolve(new Response(JSON.stringify(manifest))));
+
+      expect(screen.getByRole("heading", { name: "A few snapshots of my life" })).toHaveFocus();
+      expect(retryButton).not.toBeInTheDocument();
+    }
+  );
+
+  it("does not take focus back when the visitor has moved away during retry", async () => {
+    const user = userEvent.setup();
+    const response = Promise.withResolvers<Response>();
+    fetchMock.mockRejectedValueOnce(new TypeError("Network unavailable"));
+    fetchMock.mockReturnValueOnce(response.promise);
+    renderPage();
+    await user.click(await screen.findByRole("button", { name: "Try again" }));
+    const cvLink = screen.getByRole("link", { name: "CV" });
+    cvLink.focus();
+
+    await act(async () => response.resolve(new Response(JSON.stringify(galleryManifest))));
+
+    expect(cvLink).toHaveFocus();
+  });
+
+  it("updates the same live region through loading, error, retry, and empty states", async () => {
+    const user = userEvent.setup();
+    const initialResponse = Promise.withResolvers<Response>();
+    const retryResponse = Promise.withResolvers<Response>();
+    fetchMock.mockReturnValueOnce(initialResponse.promise);
+    fetchMock.mockReturnValueOnce(retryResponse.promise);
+    renderPage();
+    const status = screen.getByRole("status");
+    expect(status).toHaveTextContent("Loading photos…");
+    expect(status).toHaveAttribute("aria-live", "polite");
+    expect(status).toHaveAttribute("aria-atomic", "true");
+
+    await act(async () => initialResponse.resolve(new Response("Unavailable", { status: 503 })));
+    expect(screen.getByRole("status")).toBe(status);
+    expect(status).toHaveTextContent("Photos could not be loaded.");
+    await user.click(screen.getByRole("button", { name: "Try again" }));
+    expect(screen.getByRole("status")).toBe(status);
+    expect(status).toHaveTextContent("Retrying photos…");
+    await act(async () => retryResponse.resolve(new Response(JSON.stringify({ images: [] }))));
+    expect(screen.getByRole("status")).toBe(status);
+    expect(status).toHaveTextContent("No photos are available yet.");
+  });
+
+  it("offers recovery when the manifest request times out", async () => {
+    vi.useFakeTimers();
+    fetchMock.mockImplementation(
+      (_url, options) =>
+        new Promise<Response>((_resolve, reject) => {
+          const signal = options?.signal;
+          if (!signal) throw new Error("Expected a cancellable request");
+          signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+        })
+    );
+    renderPage();
+
+    await act(async () => vi.advanceTimersByTimeAsync(15_000));
+
+    expect(screen.getByRole("status")).toHaveTextContent("Photos could not be loaded.");
+    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
 });

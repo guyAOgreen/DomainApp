@@ -104,6 +104,7 @@ verify it again; the same cache window applies.
 The About Me album loads `about-me/gallery.json` from the same public bucket. The header uses
 `about-me/images/profile.jpg` directly, so replacing that object updates the header and its
 gallery entry. Both URLs are configured in `src/constants/assetConstants.ts`.
+If the portrait cannot load, decorative “GG” initials appear beside the name.
 
 The manifest is a JSON object with an ordered `images` array. Each entry requires non-empty
 strings for `src`, `alt`, and `caption`; `label` is an optional non-empty string displayed above
@@ -127,7 +128,9 @@ query strings, fragments, or paths that escape the bucket. Encoded path separato
 path segments are rejected. Keep existing descriptions accurate when replacing photos; captions,
 labels, and alt text are rendered as plain text. An empty array displays an empty-gallery message.
 Invalid JSON, invalid entries, and failed requests display an error with a retry button; the
-biographical text remains available. Validation rejects the whole manifest if any entry is invalid.
+biographical text remains available. Requests have a 15-second deadline, including reading the
+response body, so stalled requests also offer a retry. Validation rejects the whole manifest if
+any entry is invalid.
 
 To publish changes, save the current manifest and affected images outside the repository for
 rollback. Upload new photos first, then overwrite `gallery.json` using the `about-me/` prefix

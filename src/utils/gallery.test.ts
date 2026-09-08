@@ -17,6 +17,7 @@ describe("fetchGallery", () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.unstubAllGlobals();
   });
 
@@ -27,8 +28,69 @@ describe("fetchGallery", () => {
     await expect(fetchGallery(controller.signal)).resolves.toEqual(galleryManifest.images);
     expect(fetchMock).toHaveBeenCalledExactlyOnceWith(expectedBaseUrl + "about-me/gallery.json", {
       credentials: "omit",
-      signal: controller.signal,
+      signal: expect.any(AbortSignal),
     });
+  });
+
+  it.each(["headers", "body"])("times out while waiting for response %s", async (phase) => {
+    vi.useFakeTimers();
+    fetchMock.mockImplementation((_url, options) => {
+      const signal = options?.signal;
+      if (!signal) throw new Error("Expected a cancellable request");
+      if (phase === "headers") {
+        return new Promise<Response>((_resolve, reject) => {
+          signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+        });
+      }
+      return Promise.resolve(
+        new Response(
+          new ReadableStream({
+            start(stream) {
+              signal.addEventListener("abort", () => stream.error(signal.reason), { once: true });
+            },
+          })
+        )
+      );
+    });
+    const settled = vi.fn();
+    const request = fetchGallery(new AbortController().signal).then(settled, settled);
+
+    await vi.advanceTimersByTimeAsync(14_999);
+    expect(settled).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
+
+    expect(settled).toHaveBeenCalledWith(expect.objectContaining({ name: "TimeoutError" }));
+    await request;
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("preserves caller cancellation and clears the request deadline", async () => {
+    vi.useFakeTimers();
+    fetchMock.mockImplementation(
+      (_url, options) =>
+        new Promise<Response>((_resolve, reject) => {
+          const signal = options?.signal;
+          if (!signal) throw new Error("Expected a cancellable request");
+          signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+        })
+    );
+    const controller = new AbortController();
+    const request = fetchGallery(controller.signal);
+    const rejection = expect(request).rejects.toMatchObject({ name: "AbortError" });
+
+    controller.abort();
+
+    await rejection;
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("clears the deadline after successfully reading the manifest", async () => {
+    vi.useFakeTimers();
+    respondWith(galleryManifest);
+
+    await fetchGallery(new AbortController().signal);
+
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it("resolves relative paths and preserves ordering, labels, and full bucket URLs", async () => {
