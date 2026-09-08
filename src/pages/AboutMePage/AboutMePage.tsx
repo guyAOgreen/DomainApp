@@ -1,57 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import image1 from "../../assets/images/1.jpeg";
-import image2 from "../../assets/images/2.jpeg";
-import image3 from "../../assets/images/3.jpeg";
-import image4 from "../../assets/images/4.jpeg";
-import image5 from "../../assets/images/5.jpeg";
-import image6 from "../../assets/images/6.jpeg";
-import image7 from "../../assets/images/7.jpeg";
-import profileImage from "../../assets/images/profile.jpg";
 import ImageAlbum from "../../components/ImageAlbum/ImageAlbum";
 import { appRoutes } from "../../constants/routeConstants";
-
-const galleryImages = [
-  {
-    src: image1,
-    alt: "Guy on a beach at sunset with mountains in the distance",
-    caption: "Sunset on the Cape Town coast.",
-  },
-  { src: image2, alt: "Guy beside a decorated Christmas tree", caption: "Christmas at home." },
-  {
-    src: image3,
-    alt: "Guy taking an outdoor selfie while wearing a red visor",
-    caption: "Out for a sunny run.",
-  },
-  {
-    src: image4,
-    alt: "Guy smiling in an airport while wearing a striped jacket",
-    caption: "Ready for the next trip.",
-  },
-  {
-    src: image5,
-    alt: "Guy standing on an indoor padel court",
-    caption: "On court for a game of padel.",
-  },
-  {
-    src: image6,
-    alt: "Guy pointing to his name and best previous Cape Town Marathon time on a runners' board",
-    caption:
-      "The board records my previous Cape Town Marathons; I’m pointing out my name and best time.",
-  },
-  {
-    src: image7,
-    alt: "Guy with Peter Lékó at a Cape Town Chess event",
-    caption: "With Grandmaster Peter Lékó at a Cape Town Chess event.",
-  },
-  {
-    src: profileImage,
-    alt: "Guy playing chess at a tournament",
-    caption: "Over the board at a chess tournament.",
-  },
-];
+import { useGallery } from "../../hooks/useGallery";
 
 const AboutMePage: React.FC = () => {
+  const { state: gallery, retry, isRetrying } = useGallery();
+  const galleryHeading = React.useRef<HTMLHeadingElement>(null);
+  const retryButton = React.useRef<HTMLButtonElement | null>(null);
+  const setRetryButton = React.useCallback((button: HTMLButtonElement | null) => {
+    // Ref cleanup runs before removing the control, while its focus can still be checked.
+    if (!button && retryButton.current === document.activeElement) {
+      galleryHeading.current?.focus();
+    }
+    retryButton.current = button;
+  }, []);
+  const hasPhotos = gallery.status === "success" && gallery.images.length > 0;
+  const statusMessage = {
+    loading: isRetrying ? "Retrying photos…" : "Loading photos…",
+    error: "Photos could not be loaded.",
+    success: hasPhotos ? "Photos loaded." : "No photos are available yet.",
+  }[gallery.status];
+
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-20 text-gray-900 dark:bg-gray-900 dark:text-white md:px-20">
       <header className="mx-auto mb-12 max-w-4xl text-center">
@@ -116,15 +86,45 @@ const AboutMePage: React.FC = () => {
 
       <section className="mx-auto max-w-6xl" aria-labelledby="photo-gallery-heading">
         <div className="mb-6 text-center">
-          <h2 id="photo-gallery-heading" className="text-3xl font-semibold">
+          <h2
+            ref={galleryHeading}
+            id="photo-gallery-heading"
+            tabIndex={-1}
+            className="text-3xl font-semibold focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-700 dark:focus-visible:outline-blue-300"
+          >
             A few snapshots of my life
           </h2>
         </div>
-        <ImageAlbum
-          images={galleryImages}
-          thumbnailsLabel="Choose a personal snapshot"
-          autoplayInterval={8000}
-        />
+        <p
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className={hasPhotos ? "sr-only" : "py-12 text-center text-gray-700 dark:text-gray-300"}
+        >
+          {statusMessage}
+        </p>
+        {(gallery.status === "error" || isRetrying) && (
+          <div className="pb-12 text-center">
+            <button
+              ref={setRetryButton}
+              type="button"
+              aria-disabled={isRetrying}
+              onClick={() => {
+                if (gallery.status === "error") retry();
+              }}
+              className="rounded-lg bg-blue-700 px-4 py-2 font-semibold text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 aria-disabled:cursor-wait"
+            >
+              {isRetrying ? "Retrying…" : "Try again"}
+            </button>
+          </div>
+        )}
+        {gallery.status === "success" && hasPhotos && (
+          <ImageAlbum
+            images={gallery.images}
+            thumbnailsLabel="Choose a personal snapshot"
+            autoplayInterval={8000}
+          />
+        )}
       </section>
     </div>
   );

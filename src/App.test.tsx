@@ -2,6 +2,16 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import App from "./App";
+import galleryManifest from "./testUtils/gallery.json";
+
+const fetchMock = vi.fn<typeof fetch>();
+
+beforeEach(() => {
+  fetchMock.mockReset().mockImplementation(() => new Promise(() => undefined));
+  vi.stubGlobal("fetch", fetchMock);
+});
+
+afterEach(() => vi.unstubAllGlobals());
 
 vi.mock("axios", () => ({
   get: () => Promise.resolve({ data: "" }),
@@ -38,6 +48,10 @@ describe("App", () => {
 
     expect(container.querySelectorAll("header img")).toHaveLength(2);
     expect(screen.queryAllByRole("img")).toHaveLength(0);
+    expect(container.querySelector("header img")).toHaveAttribute(
+      "src",
+      "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/about-me/images/profile.jpg"
+    );
   });
 
   it("provides landmarks and a way to bypass repeated navigation", () => {
@@ -139,8 +153,10 @@ describe("App", () => {
     expect(screen.getByText("Mobile app — In development")).toBeInTheDocument();
   });
 
-  it("describes the photos in the About Me gallery", () => {
+  it("describes the photos in the About Me gallery", async () => {
+    fetchMock.mockResolvedValue(new Response(JSON.stringify(galleryManifest)));
     renderRoute("/about-me");
+    await screen.findByRole("group", { name: "Choose a personal snapshot" });
 
     [
       "Guy on a beach at sunset with mountains in the distance",

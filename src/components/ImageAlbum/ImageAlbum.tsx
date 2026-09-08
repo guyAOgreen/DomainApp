@@ -6,6 +6,7 @@ export type ImageAlbumItem = {
   thumbnailSrc?: string;
   alt: string;
   caption: string;
+  label?: string;
 };
 
 type ImageAlbumProps = {
@@ -108,7 +109,12 @@ const ImageAlbum = ({
           />
         </a>
         <figcaption className="flex flex-col gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 sm:flex-row sm:items-center sm:justify-between">
-          <span>{currentImage.caption}</span>
+          <span>
+            {currentImage.label && (
+              <span className="block font-semibold">{currentImage.label}</span>
+            )}
+            <span>{currentImage.caption}</span>
+          </span>
           <span>
             {safeCurrentIndex + 1} of {images.length}
           </span>

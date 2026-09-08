@@ -1,0 +1,44 @@
+{
+  "images": [
+    {
+      "src": "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/about-me/images/1.jpeg",
+      "alt": "Guy on a beach at sunset with mountains in the distance",
+      "caption": "Sunset on the Cape Town coast."
+    },
+    {
+      "src": "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/about-me/images/2.jpeg",
+      "alt": "Guy beside a decorated Christmas tree",
+      "caption": "Christmas at home."
+    },
+    {
+      "src": "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/about-me/images/3.jpeg",
+      "alt": "Guy taking an outdoor selfie while wearing a red visor",
+      "caption": "Out for a sunny run."
+    },
+    {
+      "src": "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/about-me/images/4.jpeg",
+      "alt": "Guy smiling in an airport while wearing a striped jacket",
+      "caption": "Ready for the next trip."
+    },
+    {
+      "src": "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/about-me/images/5.jpeg",
+      "alt": "Guy standing on an indoor padel court",
+      "caption": "On court for a game of padel."
+    },
+    {
+      "src": "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/about-me/images/6.jpeg",
+      "alt": "Guy pointing to his name and best previous Cape Town Marathon time on a runners' board",
+      "caption": "The board records my previous Cape Town Marathons; I’m pointing out my name and best time."
+    },
+    {
+      "src": "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/about-me/images/7.jpeg",
+      "alt": "Guy with Peter Lékó at a Cape Town Chess event",
+      "caption": "With Grandmaster Peter Lékó at a Cape Town Chess event."
+    },
+    {
+      "src": "https://objectstorage.af-johannesburg-1.oraclecloud.com/n/ax1xpn4rr6se/b/domainapp-public-assets/o/about-me/images/profile.jpg",
+      "alt": "Guy playing chess at a tournament",
+      "caption": "Over the board at a chess tournament."
+    }
+  ]
+}
