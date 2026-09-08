@@ -43,6 +43,15 @@ describe("accessibility", () => {
     await expectNoAxeViolations(container);
   });
 
+  it("has no axe violations with the CV preview expanded", async () => {
+    const user = userEvent.setup();
+    const { container } = renderRoute("/cv");
+    await user.click(screen.getByText("Preview CV (PDF)"));
+    await screen.findByTitle("Guy Green CV");
+
+    await expectNoAxeViolations(container);
+  });
+
   it("has no axe violations on the chess links tab", async () => {
     const user = userEvent.setup();
     const { container } = renderRoute("/chess");

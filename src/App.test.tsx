@@ -172,18 +172,32 @@ describe("App", () => {
     });
   });
 
-  it("provides an alternative when the embedded CV cannot be viewed", () => {
+  it("provides an alternative when the optional CV preview cannot be viewed", async () => {
+    const user = userEvent.setup();
     renderRoute("/cv");
 
-    expect(screen.getByTitle("Guy Green CV")).toBeInTheDocument();
+    expect(screen.queryByTitle("Guy Green CV")).not.toBeInTheDocument();
+    await user.click(screen.getByText("Preview CV (PDF)"));
+
+    expect(await screen.findByTitle("Guy Green CV")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "open the CV PDF in a new tab" })).toHaveAttribute(
       "target",
       "_blank"
     );
-    expect(screen.getByRole("link", { name: "Read the HTML version below" })).toHaveAttribute(
-      "href",
-      "#cv-content"
-    );
+    expect(screen.getByRole("heading", { name: "Professional Experience" })).toBeVisible();
+  });
+
+  it("restores the PDF preview when the bookmarked CV route is loaded again", async () => {
+    const firstVisit = renderRoute("/cv#cv-preview");
+    await screen.findByTitle("Guy Green CV");
+    const savedUrl = window.location.pathname + window.location.hash;
+    firstVisit.unmount();
+
+    renderRoute(savedUrl);
+
+    expect(await screen.findByTitle("Guy Green CV")).toBeVisible();
+    expect(screen.getByText("Preview CV (PDF)").closest("details")).toHaveAttribute("open");
+    expect(screen.getByRole("heading", { name: "Professional Experience" })).toBeVisible();
   });
 
   it("lets visitors browse the accessible FootyBru product album", async () => {
