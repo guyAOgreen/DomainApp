@@ -6,7 +6,7 @@ A personal portfolio and CV website built with React and TypeScript. The site br
 
 - A homepage with a short introduction and overview of my interests
 - An About Me page with a personal profile and photo gallery
-- A CV page with an online summary and downloadable PDF
+- A CV page with a concise web résumé, downloadable PDF, and optional preview
 - A chess page that retrieves recent games from Lichess
 - Links to my GitHub, LinkedIn, and Instagram profiles
 - Responsive light and dark colour schemes
@@ -76,6 +76,10 @@ src/
 The chess page requests recent public games from the [Lichess API](https://lichess.org/api). If the API is unavailable, that page may not be able to display recent games.
 
 ### Updating the CV
+
+The CV page presents the web résumé first. The optional PDF preview is collapsed initially and
+only loads the document when opened. Above the résumé, visitors can open the PDF in a new tab or
+follow a link that opens the on-page preview. An additional fallback link remains inside the preview.
 
 The viewer and PDF links use the public OCI URL in `src/constants/assetConstants.ts`.
 The browser opens the PDF directly; visitors save it with their browser's download or share controls.
