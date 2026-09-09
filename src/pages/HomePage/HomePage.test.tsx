@@ -18,8 +18,7 @@ describe("HomePage", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Hi, I'm Guy Green")).toHaveClass("text-2xl", "md:text-3xl");
     expect(screen.getByText("Hi, I'm Guy Green")).not.toHaveClass("uppercase");
-    expect(screen.getByText(/senior software engineer/i)).toHaveTextContent(/ACI Worldwide/);
-    expect(screen.getByText(/senior software engineer/i)).toHaveTextContent(/Oracle/);
+    expect(screen.getByText(/senior software engineer/i)).toBeInTheDocument();
     expect(screen.getByText(/Since July 2026/i)).toHaveTextContent(/independent products/);
     expect(screen.getByRole("link", { name: "Explore my projects" })).toHaveAttribute(
       "href",
@@ -55,6 +54,12 @@ describe("HomePage", () => {
     expect(screen.getByRole("heading", { name: "Product ownership" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Full-stack delivery" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Industry experience" })).toBeInTheDocument();
+    expect(screen.getByText(/^At ACI Worldwide,/i)).toHaveTextContent(
+      /At ACI Worldwide, I built payment-device and upstream integrations as an Associate Software Engineer/i
+    );
+    expect(screen.getByText(/At Oracle,/i)).toHaveTextContent(
+      /At Oracle, I progressed to Senior Software Developer \(IC3\)/i
+    );
   });
 
   it("retains a concise picture of Guy beyond software", () => {

@@ -39,9 +39,12 @@ const AboutMePage: React.FC = () => {
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <p>
               I am a senior software engineer with a background in Applied Mathematics and Computer
-              Science from UCT. At ACI Worldwide, I worked on payment-device and upstream
-              integrations. At Oracle, I progressed from Software Developer (IC2) to Senior Software
-              Developer (IC3), working across cloud services until June 2026. My{" "}
+              Science from UCT.
+            </p>
+            <p>
+              At ACI Worldwide, I was an Associate Software Engineer working on payment-device and
+              upstream integrations. At Oracle, I progressed from Software Developer (IC2) to Senior
+              Software Developer (IC3), working across cloud services until June 2026. My{" "}
               <Link
                 to={appRoutes.cv}
                 className="font-semibold text-blue-700 underline dark:text-blue-300"
