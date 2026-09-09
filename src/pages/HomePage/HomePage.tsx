@@ -74,7 +74,7 @@ const HomePage: React.FC = () => {
               </a>
             </div>
           </div>
-          <div className="flex flex-col justify-center bg-gradient-to-br from-blue-700 to-green-600 p-8 text-white md:p-10">
+          <div className="flex flex-col justify-center bg-blue-700 p-8 text-white md:p-10">
             <p className="mb-3 text-sm font-semibold tracking-widest uppercase">Built end to end</p>
             <p className="text-xl font-semibold">
               Product design, backend, web, mobile, testing, and AWS deployment.

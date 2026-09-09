@@ -37,6 +37,9 @@ jobs:
       - name: Check accessibility lint
         run: yarn lint
 
+      - name: Test deployment CI gate
+        run: yarn test:ci
+
       - name: Run tests with coverage
         id: coverage
         run: yarn test:coverage
@@ -52,3 +55,39 @@ jobs:
 
       - name: Build application
         run: yarn build
+
+  browser-tests:
+    name: Browser journeys and accessibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.2
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install Chromium and system dependencies
+        run: yarn playwright install --with-deps chromium
+
+      - name: Run browser journeys and accessibility checks
+        id: browser
+        run: yarn test:e2e
+
+      - name: Upload browser test reports
+        if: ${{ !cancelled() && (steps.browser.outcome == 'success' || steps.browser.outcome == 'failure') }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: browser-test-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14

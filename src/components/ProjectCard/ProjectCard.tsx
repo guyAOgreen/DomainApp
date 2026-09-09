@@ -21,7 +21,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
       aria-labelledby={headingId}
       className="overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-gray-800"
     >
-      <div className="bg-gradient-to-r from-blue-700 to-green-600 px-6 py-10 text-white md:px-10">
+      <div className="bg-blue-700 px-6 py-10 text-white md:px-10">
         {project.featured && (
           <p className="mb-2 text-sm font-semibold tracking-widest uppercase">Featured project</p>
         )}

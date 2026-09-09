@@ -20,6 +20,9 @@ jobs:
     name: Verify and build
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
     outputs:
       commit: ${{ steps.resolve.outputs.commit }}
       artifact: ${{ steps.resolve.outputs.artifact }}
@@ -68,13 +71,22 @@ jobs:
           echo "artifact=$artifact" >> "$GITHUB_OUTPUT"
           echo "deployment-script-commit=$deployment_script_commit" >> "$GITHUB_OUTPUT"
 
-          git checkout --detach "$commit"
-
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22.22.2
           cache: yarn
+
+      - name: Require successful CI for the deploy commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOY_COMMIT: ${{ steps.resolve.outputs.commit }}
+        run: node .github/scripts/verify-deployment-ci.mjs
+
+      - name: Check out the verified commit
+        env:
+          DEPLOY_COMMIT: ${{ steps.resolve.outputs.commit }}
+        run: git checkout --detach "$DEPLOY_COMMIT"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile

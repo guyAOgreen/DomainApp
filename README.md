@@ -54,6 +54,9 @@ The site will be available at [http://localhost:5173](http://localhost:5173).
 | `yarn dev` | Run the Vite development server. |
 | `yarn test` | Run the Vitest suite once. |
 | `yarn test:coverage` | Run the suite with V8 coverage reports and minimum coverage checks. |
+| `yarn test:ci` | Test the deployment CI gate with mocked GitHub responses. |
+| `yarn test:e2e` | Type-check browser tests, build the app, and run Playwright journeys and axe scans. |
+| `yarn test:e2e:report` | Open the latest Playwright HTML report. |
 | `yarn test:watch` | Run Vitest in watch mode. |
 | `yarn build` | Type-check and create an optimized production build in `dist/`. |
 | `yarn preview` | Preview the production build locally. |
@@ -71,8 +74,9 @@ The pull-request and main-branch CI job runs this command instead of `yarn test`
 the suite once. Failed tests or coverage below any minimum fail the job. The `coverage-report`
 artifact contains the HTML and JSON reports and is retained for 14 days, including when tests
 or thresholds fail, provided report generation completes and the run is not cancelled.
-Download and extract it, then open `index.html`. The separate manual production deployment
-workflow retains its existing verification command, including support for older main commits.
+Download and extract it, then open `index.html`. The manual production deployment workflow
+requires successful CI for its selected commit, including coverage and browser checks, before
+running its own unit tests and building the release. See Production releases for rollback limits.
 
 ### Initial baseline and thresholds
 
@@ -128,6 +132,60 @@ yarn test:coverage --coverage.thresholds.lines=100
 
 With the baseline above, this command must exit nonzero after reporting line coverage below
 100%, while still writing the reports. Run `yarn test:coverage` again for the normal passing run.
+
+## Browser journeys and accessibility
+
+Install the Chromium browser after installing dependencies, then run the browser suite:
+
+```bash
+yarn playwright install chromium
+yarn test:e2e
+yarn test:e2e:report
+```
+
+`playwright.config.ts` starts a fresh production build using Vite preview on
+`http://127.0.0.1:4173`. Keep that port free: existing servers are deliberately not reused, so
+tests cannot silently exercise a stale build or development server. The suite uses Chromium's
+new headless mode at desktop (1440 × 900) and Pixel 7 mobile viewport sizes, with two workers.
+It does not deploy anything. To run one viewport or test, use Playwright options, for example
+`yarn test:e2e --project=mobile-chromium` or `yarn test:e2e --grep="recent games"`.
+
+The journeys cover Home → Projects → CV, project image loading, browser Back, direct CV loading,
+the preview and new-tab PDF link, keyboard use of the skip link and mobile menu, and chess game
+selection/profile links. Axe scans cover the five main pages, the expanded CV preview, the open
+mobile menu, and the chess profile links in both light and dark modes. They wait for relevant
+content to load and keep all default axe rules, including colour contrast, enabled. Scans fail
+on both violations and unresolved (`incomplete`) colour-contrast results. The Projects card
+header and Home project feature panel use a solid dark blue background so their white text
+has measurable contrast, replacing the gradients that axe could not assess.
+
+`e2e/fixtures.ts` intercepts external requests at the browser-context level, including popups.
+Lichess responses and embeds, the OCI gallery/profile images, and a blank one-page PDF are
+served from local fixtures. Unexpected external requests are blocked and fail the test. Local
+application assets, including project screenshots, are loaded from the production build.
+These checks verify our integration behaviour, not external uptime, real photo descriptions,
+or the contents of the published CV. Browser viewport emulation does not replace device testing.
+
+The only axe scope exclusion is iframe contents: the third-party chess UI and browser PDF
+viewer are outside this app's ownership. `e2e/axe.ts` uses `iframes: false` with `setLegacyMode()`
+because the default partial-scan path in `@axe-core/playwright` 4.13 ignores that option when
+collecting child frames. A regression test seeds inaccessible embedded content and verifies
+that it is ignored while a missing title on our iframe is still caught. Our iframe elements,
+preview controls, and fallback links remain checked. Full axe results are attached to the HTML
+report; other incomplete findings remain available for manual review. Automated scans and keyboard assertions
+complement manual keyboard, screen-reader, and visual checks; they do not prove full accessibility.
+
+CI runs a separate browser job on pull requests and pushes to main. Tests have no automatic
+retries, and failures fail the job. The `browser-test-report` artifact retains the HTML report,
+axe attachments, failure screenshots, and failure traces for 14 days when produced, including
+after test failures. Download and extract it, then open `playwright-report/index.html` or run
+`yarn playwright show-report <path-to-playwright-report>`. Use the report's trace viewer to
+inspect a failure. A type-check, build, or browser-startup failure may happen before reports exist.
+
+Browser files live under `e2e/` and are type-checked through `tsconfig.e2e.json`. Vitest only
+discovers tests under `src/`, and unit coverage continues to measure production files there.
+Generated `playwright-report/` and `test-results/` output is ignored by Git, Prettier, and ESLint.
+Keep Playwright packages at matching versions and reinstall Chromium when upgrading them.
 
 ## Project structure
 
@@ -280,7 +338,19 @@ serve `index.html` as the fallback for unknown paths so React Router routes can 
 Production deployments use the manually triggered `Deploy production` GitHub Actions workflow.
 The workflow accepts an optional commit SHA, verifies that it is reachable from `main`, runs the
 normal checks, and deploys that exact build artifact through the protected `production`
-environment.
+environment. Before checking out the release commit or installing its dependencies, it runs
+`.github/scripts/verify-deployment-ci.mjs` from the checked-out `main` branch. The gate requires
+the latest push-triggered `ci.yml` run on `main` for that exact SHA to have completed successfully,
+with both `verify` and `Browser journeys and accessibility` successful. It rejects missing,
+pending, failed, cancelled, or skipped checks and fails closed if GitHub cannot be queried.
+The job has read-only Actions access for this check; deployment credentials remain in the
+separate production job.
+
+Rollback commits must meet the same CI requirement. Commits predating the browser job, or
+whose CI history is no longer available, cannot be deployed through this workflow. There is
+no bypass input. A pending CI run must finish successfully before retrying deployment.
+`yarn test:ci` exercises the gate locally with mocked API responses and also runs in CI.
+Required merge checks are separate GitHub repository settings; this workflow does not change them.
 
 The environment requires these secrets:
 
