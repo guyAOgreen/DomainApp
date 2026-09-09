@@ -16,7 +16,7 @@ export default [
   {
     // Mirrors the build output and coverage entries in .gitignore. `build` is a stale
     // Create React App artifact that still exists in some working copies.
-    ignores: ["build/**", "dist/**", "coverage/**"],
+    ignores: ["build/**", "dist/**", "coverage/**", "playwright-report/**", "test-results/**"],
   },
   {
     files: ["src/**/*.{ts,tsx}"],

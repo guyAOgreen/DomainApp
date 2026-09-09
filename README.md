@@ -54,6 +54,8 @@ The site will be available at [http://localhost:5173](http://localhost:5173).
 | `yarn dev` | Run the Vite development server. |
 | `yarn test` | Run the Vitest suite once. |
 | `yarn test:coverage` | Run the suite with V8 coverage reports and minimum coverage checks. |
+| `yarn test:e2e` | Type-check browser tests, build the app, and run Playwright journeys and axe scans. |
+| `yarn test:e2e:report` | Open the latest Playwright HTML report. |
 | `yarn test:watch` | Run Vitest in watch mode. |
 | `yarn build` | Type-check and create an optimized production build in `dist/`. |
 | `yarn preview` | Preview the production build locally. |
@@ -128,6 +130,54 @@ yarn test:coverage --coverage.thresholds.lines=100
 
 With the baseline above, this command must exit nonzero after reporting line coverage below
 100%, while still writing the reports. Run `yarn test:coverage` again for the normal passing run.
+
+## Browser journeys and accessibility
+
+Install the Chromium browser after installing dependencies, then run the browser suite:
+
+```bash
+yarn playwright install chromium
+yarn test:e2e
+yarn test:e2e:report
+```
+
+`playwright.config.ts` starts a fresh production build using Vite preview on
+`http://127.0.0.1:4173`. Keep that port free: existing servers are deliberately not reused, so
+tests cannot silently exercise a stale build or development server. The suite uses Chromium's
+new headless mode at desktop (1440 × 900) and Pixel 7 mobile viewport sizes, with two workers.
+It does not deploy anything. To run one viewport or test, use Playwright options, for example
+`yarn test:e2e --project=mobile-chromium` or `yarn test:e2e --grep="recent games"`.
+
+The journeys cover Home → Projects → CV, project image loading, browser Back, direct CV loading,
+the preview and new-tab PDF link, keyboard use of the skip link and mobile menu, and chess game
+selection/profile links. Axe scans cover the five main pages, the expanded CV preview, the open
+mobile menu, and the chess profile links in both light and dark modes. They wait for relevant
+content to load and keep all default axe rules, including colour contrast, enabled.
+
+`e2e/fixtures.ts` intercepts external requests at the browser-context level, including popups.
+Lichess responses and embeds, the OCI gallery/profile images, and a blank one-page PDF are
+served from local fixtures. Unexpected external requests are blocked and fail the test. Local
+application assets, including project screenshots, are loaded from the production build.
+These checks verify our integration behaviour, not external uptime, real photo descriptions,
+or the contents of the published CV. Browser viewport emulation does not replace device testing.
+
+The only axe scope exclusion is iframe contents (`iframes: false`): the third-party chess UI
+and browser PDF viewer are outside this app's ownership. Our iframe elements, accessible names,
+preview controls, and fallback links remain checked. Full axe results are attached to the HTML
+report, including findings requiring manual review. Automated scans and keyboard assertions
+complement manual keyboard, screen-reader, and visual checks; they do not prove full accessibility.
+
+CI runs a separate browser job on pull requests and pushes to main. Tests have no automatic
+retries, and failures fail the job. The `browser-test-report` artifact retains the HTML report,
+axe attachments, failure screenshots, and failure traces for 14 days when produced, including
+after test failures. Download and extract it, then open `playwright-report/index.html` or run
+`yarn playwright show-report <path-to-playwright-report>`. Use the report's trace viewer to
+inspect a failure. A type-check, build, or browser-startup failure may happen before reports exist.
+
+Browser files live under `e2e/` and are type-checked through `tsconfig.e2e.json`. Vitest only
+discovers tests under `src/`, and unit coverage continues to measure production files there.
+Generated `playwright-report/` and `test-results/` output is ignored by Git, Prettier, and ESLint.
+Keep Playwright packages at matching versions and reinstall Chromium when upgrading them.
 
 ## Project structure
 
