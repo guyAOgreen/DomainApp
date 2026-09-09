@@ -64,12 +64,30 @@ The site will be available at [http://localhost:5173](http://localhost:5173).
 ```text
 src/
 ├── assets/       Images and GIFs
-├── components/   Shared navigation, social, loading, and tab components
+├── components/   Shared navigation, project cards, galleries, and other UI components
 ├── constants/    Shared application constants
+├── data/         Typed project details and screenshot metadata
 ├── hooks/        Remote gallery loading state
-├── pages/        Home, About Me, CV, and Chess routes
+├── pages/        Home, About Me, Projects, CV, and Chess routes
 └── utils/        Gallery validation and Lichess game utilities
 ```
+
+## Updating projects
+
+The Projects page renders the ordered `projects` array in `src/data/projects.ts` using
+`src/components/ProjectCard/ProjectCard.tsx`. Add an entry to that array to publish another
+project on the page; no additional page markup is needed.
+
+Each `Project` has a unique `id`, `title`, `description`, `stack`, `links`, `status`, and `images`.
+Links contain a label and external URL. Status entries contain a unique name (such as "Web app"),
+a state (`Live` or `In development`), and a description, allowing different parts of a project
+to have different delivery states. Images contain `src`, `alt`, and `caption`, with optional
+`thumbnailSrc` and `label`; their array order controls the gallery. Import local screenshots from
+`src/assets/images/projects/` as the existing entry does.
+
+`featured`, `role`, and `highlights` are optional. Empty collections hide their sections.
+Use only verified project details and accurate screenshot descriptions. Run the normal checks
+and inspect `/projects` at mobile and desktop widths after editing the data.
 
 ## External data
 
