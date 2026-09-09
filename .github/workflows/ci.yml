@@ -37,6 +37,9 @@ jobs:
       - name: Check accessibility lint
         run: yarn lint
 
+      - name: Test deployment CI gate
+        run: yarn test:ci
+
       - name: Run tests with coverage
         id: coverage
         run: yarn test:coverage

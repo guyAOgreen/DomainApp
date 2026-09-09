@@ -1,19 +1,19 @@
-import AxeBuilder from "@axe-core/playwright";
 import type { Page, TestInfo } from "@playwright/test";
+import { analyzeAccessibility } from "./axe";
 import { test, expect, cvUrl } from "./fixtures";
 
 const scan = async (page: Page, testInfo: TestInfo) => {
   await page.evaluate(() => document.fonts.ready);
-  const results = await new AxeBuilder({ page })
-    // Keep all default rules, including colour contrast. Our iframe elements remain checked;
-    // the PDF viewer and third-party chess UI inside them are outside this app's ownership.
-    .options({ iframes: false })
-    .analyze();
+  const results = await analyzeAccessibility(page);
   await testInfo.attach("axe-results", {
     body: JSON.stringify(results, null, 2),
     contentType: "application/json",
   });
   expect(results.violations).toEqual([]);
+  expect(
+    results.incomplete.filter((result) => result.id === "color-contrast"),
+    "Text contrast must be measurable; unresolved contrast results need attention"
+  ).toEqual([]);
 };
 
 for (const colorScheme of ["light", "dark"] as const) {

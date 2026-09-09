@@ -19,6 +19,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage.enabled",
+    "test:ci": "node --test .github/scripts/verify-deployment-ci.test.mjs",
     "test:e2e": "tsc --project tsconfig.e2e.json && playwright test",
     "test:e2e:report": "playwright show-report",
     "test:watch": "vitest"
