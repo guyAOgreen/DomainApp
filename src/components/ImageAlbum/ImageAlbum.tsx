@@ -12,6 +12,7 @@ export type ImageAlbumItem = {
 type ImageAlbumProps = {
   images: ImageAlbumItem[];
   thumbnailsLabel: string;
+  albumLabel?: string;
   autoplayInterval?: number;
   imageFit?: "contain" | "cover";
 };
@@ -19,6 +20,7 @@ type ImageAlbumProps = {
 const ImageAlbum = ({
   images,
   thumbnailsLabel,
+  albumLabel = "Image album",
   autoplayInterval,
   imageFit = "contain",
 }: ImageAlbumProps) => {
@@ -83,7 +85,7 @@ const ImageAlbum = ({
   return (
     <div
       role="region"
-      aria-label="Image album"
+      aria-label={albumLabel}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onFocus={() => setHasFocus(true)}
