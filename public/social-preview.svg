@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <title>Guy Green — Portfolio and CV</title>
+  <desc>A blue and white GG monogram beside Guy Green's name on a dark background.</desc>
+  <rect width="1200" height="630" fill="#111827" />
+  <path d="M0 0H1200V12H0Z" fill="#1d4ed8" />
+  <circle cx="1160" cy="600" r="290" fill="#172554" />
+  <circle cx="1160" cy="600" r="210" fill="none" stroke="#1e3a8a" stroke-width="2" />
+  <g transform="translate(80 82)">
+    <rect width="128" height="128" rx="28" fill="#1f2937" />
+    <g fill="none" stroke-width="9" stroke-linecap="butt" stroke-linejoin="round">
+      <path d="M55 47C51 40 46 37 40 37C26 37 19 48 19 64S26 91 40 91C47 91 53 88 57 84V65H41" stroke="#fff" />
+      <path d="M105 47C101 40 96 37 90 37C76 37 69 48 69 64S76 91 90 91C97 91 103 88 107 84V65H91" stroke="#93c5fd" />
+    </g>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="244" y="157" fill="#93c5fd" font-size="24" font-weight="700" letter-spacing="5">PORTFOLIO &amp; CV</text>
+    <text x="80" y="330" fill="#fff" font-size="88" font-weight="700" letter-spacing="-3">Guy Green</text>
+    <text x="84" y="400" fill="#d1d5db" font-size="32">Projects, experience, and interests.</text>
+    <path d="M84 473H148" stroke="#93c5fd" stroke-width="4" />
+    <text x="84" y="530" fill="#93c5fd" font-size="24">guygreen.dev</text>
+  </g>
+</svg>
