@@ -37,8 +37,18 @@ jobs:
       - name: Check accessibility lint
         run: yarn lint
 
-      - name: Run tests
-        run: yarn test
+      - name: Run tests with coverage
+        id: coverage
+        run: yarn test:coverage
+
+      - name: Upload coverage report
+        if: ${{ !cancelled() && (steps.coverage.outcome == 'success' || steps.coverage.outcome == 'failure') }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: coverage-report
+          path: coverage/
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Build application
         run: yarn build
