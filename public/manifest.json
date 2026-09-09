@@ -1,10 +1,11 @@
 {
   "short_name": "Guy Green",
-  "name": "Guy Green's Home Page",
+  "name": "Guy Green — Portfolio and CV",
+  "description": "Guy Green's personal portfolio: projects, professional experience, CV, and interests.",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "sizes": "16x16 32x32 48x48",
       "type": "image/x-icon"
     },
     {
@@ -18,8 +19,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#111827",
+  "background_color": "#f9fafb"
 }

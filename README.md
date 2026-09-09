@@ -155,6 +155,32 @@ deployment. Verify the gallery controls and header after the next load and cache
 
 ## Deployment
 
+### Site metadata and branding
+
+`index.html` contains the portfolio title, description, and Open Graph / Twitter card metadata.
+The sharing URLs use the public origin `https://guygreen.dev`. These tags are in the initial HTML
+so crawlers can read them without running JavaScript. All routes share this portfolio preview;
+React continues to set the browser tab title for each route. Route-specific sharing previews
+would need separately generated HTML or server rendering.
+
+The GG monogram uses the site's dark grey and blue palette. Its editable vector source is
+`public/favicon.svg`; the sharing artwork is `public/social-preview.svg`. The checked-in exports
+are `favicon.ico` (16, 32, and 48 pixels), `logo192.png`, `logo512.png`, `apple-touch-icon.png`
+(180 pixels), and `social-preview.png` (1200 × 630 pixels). To change the artwork, edit the SVGs,
+export them at those sizes, and replace the corresponding PNG/ICO files. Preserve transparent
+corners in the PNG/ICO favicon exports (headless Chrome needs `--default-background-color=00000000`).
+The Apple touch icon uses a solid `#111827` square background. Social metadata points
+to the PNG export. Keep its dimensions and alt text in `index.html` in sync with the artwork.
+`public/manifest.json` contains the app name and launch colours; its theme colour matches the
+HTML theme colour and its background matches the site's light background.
+
+After deployment, check the page source and open `https://guygreen.dev/social-preview.png`,
+including when loading a nested route directly. Verify the favicon and a shared link preview
+on the target platform; sharing services may cache an earlier preview and require a refresh
+through their inspection tool.
+
+### Production releases
+
 Run `yarn build` and deploy the generated `dist/` directory to a static host. The host must
 serve `index.html` as the fallback for unknown paths so React Router routes can be loaded directly.
 

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <title>Guy Green</title>
+  <rect width="128" height="128" rx="28" fill="#111827" />
+  <g fill="none" stroke-width="9" stroke-linecap="butt" stroke-linejoin="round">
+    <path d="M55 47C51 40 46 37 40 37C26 37 19 48 19 64S26 91 40 91C47 91 53 88 57 84V65H41" stroke="#fff" />
+    <path d="M105 47C101 40 96 37 90 37C76 37 69 48 69 64S76 91 90 91C97 91 103 88 107 84V65H91" stroke="#93c5fd" />
+  </g>
+</svg>
