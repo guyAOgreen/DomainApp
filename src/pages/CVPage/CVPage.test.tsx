@@ -19,11 +19,60 @@ describe("CvPage", () => {
 
     expect(
       screen.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent)
-    ).toEqual(["Professional Experience", "Skills", "Education", "Selected achievements"]);
-    expect(screen.getByRole("heading", { name: "Oracle — Software Engineer" })).toBeVisible();
-    expect(screen.getByRole("heading", { name: "ACI — Software Developer" })).toBeVisible();
+    ).toEqual([
+      "Professional Experience",
+      "Skills",
+      "Selected projects",
+      "Education",
+      "Selected achievements",
+    ]);
+    expect(screen.getByRole("heading", { name: "Independent Software Engineer" })).toBeVisible();
     expect(screen.queryByTitle("Guy Green CV")).not.toBeInTheDocument();
     expect(screen.getByText("Preview CV (PDF)").closest("details")).not.toHaveAttribute("open");
+  });
+
+  it("matches the current PDF's role titles and dates in reverse chronological order", () => {
+    renderCv();
+
+    const experience = within(screen.getByRole("region", { name: "Professional Experience" }));
+    expect(
+      experience.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent)
+    ).toEqual([
+      "Independent Software Engineer",
+      "Oracle — Senior Software Developer (IC3)",
+      "ACI Worldwide — Associate Software Engineer",
+    ]);
+    for (const [title, dates] of [
+      ["Independent Software Engineer", "July 2026 – Present"],
+      ["Oracle — Senior Software Developer (IC3)", "April 2020 – June 2026"],
+      ["ACI Worldwide — Associate Software Engineer", "January 2019 – March 2020"],
+    ]) {
+      expect(experience.getByRole("heading", { name: title }).parentElement).toHaveTextContent(
+        dates
+      );
+    }
+    expect(experience.getByText(/Promoted from Software Developer \(IC2\)/)).toBeVisible();
+    expect(experience.getByText(/eSocket.POS/)).toBeVisible();
+    expect(screen.queryByText("April 2020 – Present")).not.toBeInTheDocument();
+  });
+
+  it("includes dated projects and availability from the current PDF", () => {
+    renderCv();
+
+    const projects = within(screen.getByRole("region", { name: "Selected projects" }));
+    expect(projects.getByRole("heading", { name: "FootyBru" }).parentElement).toHaveTextContent(
+      "April 2026 – Present"
+    );
+    expect(projects.getByRole("heading", { name: "guygreen.dev" }).parentElement).toHaveTextContent(
+      "September 2024 – Present"
+    );
+    expect(projects.getByRole("link", { name: "More about FootyBru" })).toHaveAttribute(
+      "href",
+      "/projects"
+    );
+    expect(
+      screen.getByText(/Open to full-stack, backend or platform-oriented roles/)
+    ).toHaveTextContent(/relocation locally or internationally/);
   });
 
   it("opens a linked preview on arrival and still lets the reader close and reopen it", async () => {
@@ -57,13 +106,26 @@ describe("CvPage", () => {
     renderCv();
 
     const skills = within(screen.getByRole("region", { name: "Skills" }));
-    expect(skills.getByText("Languages")).toBeVisible();
-    expect(skills.getByText("Web & backend")).toBeVisible();
-    expect(skills.getByText("Cloud & infrastructure")).toBeVisible();
+    expect(skills.getByText("Programming")).toBeVisible();
+    expect(skills.getByText("Backend")).toBeVisible();
+    expect(skills.getByText("Delivery & operations")).toBeVisible();
     const technologies = skills.getAllByRole("listitem").map((item) => item.textContent);
     expect(new Set(technologies).size).toBe(technologies.length);
     expect(technologies).toEqual(
-      expect.arrayContaining(["React", "TypeScript", "Bash", "Terraform", "Ansible", "Dropwizard"])
+      expect.arrayContaining([
+        "React",
+        "TypeScript",
+        "SQL",
+        "Terraform",
+        "Dropwizard",
+        "Spring Boot",
+        "PostgreSQL",
+        "Oracle Database",
+        "AWS",
+        "OCI",
+        "GitHub Actions",
+        "Grafana",
+      ])
     );
     const experience = within(screen.getByRole("region", { name: "Professional Experience" }));
     expect(experience.queryByText(/Java, Python, Bash/)).not.toBeInTheDocument();
@@ -75,6 +137,9 @@ describe("CvPage", () => {
     const achievements = within(screen.getByRole("region", { name: "Selected achievements" }));
     expect(achievements.getByText(/represented.*province at junior level/i)).toBeVisible();
     expect(achievements.getByText(/Ambassador for Epicenter Virgin Active Padel/)).toBeVisible();
+    expect(achievements.getByText(/Oracle F1 Fantasy League winner/)).toHaveTextContent(
+      "2023, 2024 and 2025"
+    );
     expect(achievements.getByRole("link", { name: "More about me" })).toHaveAttribute(
       "href",
       "/about-me"
@@ -94,6 +159,7 @@ describe("CvPage", () => {
       "2018",
       "2014 – 2016",
     ]);
+    expect(education.getByText(/Propositional Typicality Reasoning/)).toBeVisible();
   });
 
   it("opens the same PDF in a new tab for browser-native viewing and saving", () => {

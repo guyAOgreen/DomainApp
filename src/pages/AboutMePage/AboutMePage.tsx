@@ -28,7 +28,7 @@ const AboutMePage: React.FC = () => {
       <header className="mx-auto mb-12 max-w-4xl text-center">
         <h1 className="mb-4 text-5xl font-extrabold">About Me</h1>
         <p className="text-lg text-gray-700 dark:text-gray-300">
-          Software developer, product builder, chess player, and enthusiastic participant in more
+          Software engineer, product builder, chess player, and enthusiastic participant in more
           sports than my calendar probably has room for.
         </p>
       </header>
@@ -38,10 +38,10 @@ const AboutMePage: React.FC = () => {
           <h2 className="mb-4 text-2xl font-semibold">Software and product</h2>
           <div className="space-y-4 text-gray-700 dark:text-gray-300">
             <p>
-              I am a full-stack software developer with a background in Applied Mathematics and
-              Computer Science from UCT. At ACI, I worked on software that processed payments from
-              point-of-sale systems to upstream systems. At Oracle, I worked across multiple cloud
-              projects. My{" "}
+              I am a senior software engineer with a background in Applied Mathematics and Computer
+              Science from UCT. At ACI Worldwide, I worked on payment-device and upstream
+              integrations. At Oracle, I progressed from Software Developer (IC2) to Senior Software
+              Developer (IC3), working across cloud services until June 2026. My{" "}
               <Link
                 to={appRoutes.cv}
                 className="font-semibold text-blue-700 underline dark:text-blue-300"
@@ -51,8 +51,8 @@ const AboutMePage: React.FC = () => {
               covers the details.
             </p>
             <p>
-              I’m now focused on my own independent projects and especially enjoy turning an idea
-              into a useful product. One of those projects is{" "}
+              Since July 2026, I’ve focused on my own independent projects. I especially enjoy
+              turning an idea into a useful product. One of those projects is{" "}
               <Link
                 to={appRoutes.projects}
                 className="font-semibold text-blue-700 underline dark:text-blue-300"

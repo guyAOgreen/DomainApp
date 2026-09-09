@@ -95,6 +95,11 @@ The chess page requests recent public games from the [Lichess API](https://liche
 
 ### Updating the CV
 
+The web résumé in `src/pages/CVPage/CVPage.tsx` is maintained separately from the hosted PDF.
+When updating either version, reconcile role titles, dates, responsibilities, skills, projects,
+and education with the current CV. Also check the professional summaries on Home and About Me
+and the project details in `src/data/projects.ts`. Replacing the PDF does not update those pages.
+
 The CV page presents the web résumé first. The PDF preview is collapsed on ordinary visits and
 loads the document only when opened. Visiting `/cv#cv-preview` opens it automatically, including
 after a reload. Above the résumé, visitors can open the PDF in a new tab or

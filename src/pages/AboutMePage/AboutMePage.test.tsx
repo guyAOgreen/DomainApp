@@ -33,12 +33,14 @@ describe("AboutMePage", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Software and product" })).toBeInTheDocument();
-    expect(screen.getByText(/full-stack software developer/i)).toHaveTextContent(
-      /At ACI, I worked on software that processed payments from point-of-sale systems to upstream systems/i
+    expect(screen.getByText(/senior software engineer/i)).toHaveTextContent(
+      /At ACI Worldwide, I worked on payment-device and upstream integrations/i
     );
-    expect(screen.getByText(/full-stack software developer/i)).toHaveTextContent(
-      /At Oracle, I worked across multiple cloud projects/i
+    expect(screen.getByText(/senior software engineer/i)).toHaveTextContent(
+      /Senior Software Developer \(IC3\)/i
     );
+    expect(screen.getByText(/senior software engineer/i)).toHaveTextContent(/June 2026/);
+    expect(screen.getByText(/Since July 2026/i)).toHaveTextContent(/independent projects/);
     expect(screen.getByRole("link", { name: "CV" })).toHaveAttribute("href", "/cv");
     expect(screen.getByRole("link", { name: "FootyBru" })).toHaveAttribute("href", "/projects");
     expect(screen.getByRole("heading", { name: "Beyond Code" })).toBeInTheDocument();

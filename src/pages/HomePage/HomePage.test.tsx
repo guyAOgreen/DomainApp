@@ -13,13 +13,14 @@ describe("HomePage", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Full-stack developer and independent product builder",
+        name: "Senior full-stack engineer and independent product builder",
       })
     ).toBeInTheDocument();
     expect(screen.getByText("Hi, I'm Guy Green")).toHaveClass("text-2xl", "md:text-3xl");
     expect(screen.getByText("Hi, I'm Guy Green")).not.toHaveClass("uppercase");
-    expect(screen.getByText(/payment-processing software at ACI/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/multiple cloud projects at Oracle/i)).toHaveLength(2);
+    expect(screen.getByText(/senior software engineer/i)).toHaveTextContent(/ACI Worldwide/);
+    expect(screen.getByText(/senior software engineer/i)).toHaveTextContent(/Oracle/);
+    expect(screen.getByText(/Since July 2026/i)).toHaveTextContent(/independent products/);
     expect(screen.getByRole("link", { name: "Explore my projects" })).toHaveAttribute(
       "href",
       "/projects"

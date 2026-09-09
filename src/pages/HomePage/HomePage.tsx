@@ -11,13 +11,13 @@ const HomePage: React.FC = () => {
             Hi, I&apos;m Guy Green
           </p>
           <h1 className="mb-6 text-4xl font-extrabold md:text-6xl">
-            Full-stack developer and independent product builder
+            Senior full-stack engineer and independent product builder
           </h1>
           <p className="mx-auto mb-8 max-w-3xl text-lg text-gray-700 md:text-xl dark:text-gray-300">
-            I build practical products across backend, web, and mobile—from initial product
-            decisions through testing and deployment. I bring experience from payment-processing
-            software at ACI and multiple cloud projects at Oracle to the independent products I am
-            building now.
+            I’m a senior software engineer with experience in payment-processing software at ACI
+            Worldwide and cloud services at Oracle. Since July 2026, I’ve focused on independent
+            products, working across backend, web and mobile—from initial product decisions through
+            testing and deployment.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -104,8 +104,9 @@ const HomePage: React.FC = () => {
             <article className="rounded-xl bg-gray-100 p-6 shadow dark:bg-gray-700">
               <h3 className="mb-3 text-2xl font-semibold">Industry experience</h3>
               <p>
-                My professional background spans payment processing at ACI and work across multiple
-                cloud projects at Oracle.
+                At ACI Worldwide, I built payment-device and upstream integrations. At Oracle, I
+                progressed to Senior Software Developer (IC3), delivering cloud features, reviewing
+                code, mentoring engineers and supporting production services.
               </p>
             </article>
           </div>
