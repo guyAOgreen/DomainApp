@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { Project } from "../../data/projects";
+import { expectNoAxeViolations } from "../../testUtils/axe";
 import ProjectsPage from "./ProjectsPage";
 
 vi.mock("../../data/projects", () => ({
@@ -38,6 +39,18 @@ vi.mock("../../data/projects", () => ({
 }));
 
 describe("ProjectsPage", () => {
+  it("gives multiple project galleries distinct accessible names without axe violations", async () => {
+    const { container } = render(<ProjectsPage />);
+
+    await expectNoAxeViolations(container);
+    expect(
+      screen.getByRole("region", { name: "First test project product gallery" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: "Second test project product gallery" })
+    ).toBeInTheDocument();
+  });
+
   it("renders each project's details, links, status, and images from the data", () => {
     render(<ProjectsPage />);
 

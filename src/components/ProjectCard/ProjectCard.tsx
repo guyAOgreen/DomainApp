@@ -59,11 +59,11 @@ const ProjectCard = ({ project }: { project: Project }) => {
         {project.status.length > 0 && (
           <section>
             <h3 className="mb-4 text-2xl font-semibold">Current status</h3>
-            <ul className="grid gap-4 md:grid-cols-3">
+            <ul className="flex flex-wrap gap-4">
               {project.status.map((status) => (
                 <li
                   key={status.name}
-                  className={`rounded-lg border p-4 ${statusStyles[status.state].card}`}
+                  className={`min-w-0 flex-1 basis-64 rounded-lg border p-4 ${statusStyles[status.state].card}`}
                 >
                   <strong className={`block ${statusStyles[status.state].text}`}>
                     {status.name} — {status.state}
@@ -107,6 +107,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
             <h3 className="mb-4 text-2xl font-semibold">Product gallery</h3>
             <ImageAlbum
               images={project.images}
+              albumLabel={`${project.title} product gallery`}
               thumbnailsLabel={`Choose a ${project.title} screenshot`}
             />
           </section>
