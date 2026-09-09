@@ -28,8 +28,8 @@ const AboutMePage: React.FC = () => {
       <header className="mx-auto mb-12 max-w-4xl text-center">
         <h1 className="mb-4 text-5xl font-extrabold">About Me</h1>
         <p className="text-lg text-gray-700 dark:text-gray-300">
-          Software engineer, product builder, chess player, and enthusiastic participant in more
-          sports than my calendar probably has room for.
+          Senior software engineer, product builder, chess player, and enthusiastic participant in
+          more sports than my calendar probably has room for.
         </p>
       </header>
 
