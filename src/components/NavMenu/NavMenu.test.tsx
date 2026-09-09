@@ -36,14 +36,13 @@ describe("NavMenu", () => {
     expect(navigation).toHaveClass("hidden", "md:block");
   });
 
-  it("only reveals decorative animation on large screens when motion is allowed", () => {
+  it("keeps decorative animation out of the navigation", () => {
     const { container } = render(
       <MemoryRouter>
         <NavMenu />
       </MemoryRouter>
     );
 
-    expect(container.querySelector("img")).toHaveClass("hidden", "motion-safe:lg:block");
-    expect(container.querySelector("img")).not.toHaveClass("lg:block");
+    expect(container.querySelector("img")).not.toBeInTheDocument();
   });
 });

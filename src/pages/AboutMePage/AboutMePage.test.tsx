@@ -49,6 +49,16 @@ describe("AboutMePage", () => {
     expect(screen.getByRole("heading", { name: "A few snapshots of my life" })).toBeInTheDocument();
   });
 
+  it("shows the decorative animation beside personal interests only when motion is allowed on large screens", () => {
+    renderPage();
+
+    const interests = screen.getByRole("heading", { name: "Beyond Code" }).closest("section");
+    const animation = interests?.querySelector("img");
+    expect(animation).toHaveAttribute("alt", "");
+    expect(animation).toHaveClass("hidden", "motion-safe:lg:block");
+    expect(animation).not.toHaveClass("lg:block");
+  });
+
   it("presents the snapshots as an autoplaying album without cropping the photos", async () => {
     fetchMock.mockResolvedValue(new Response(JSON.stringify(galleryManifest)));
     const user = userEvent.setup();
