@@ -115,7 +115,7 @@ describe("App", () => {
   });
 
   it.each([
-    ["/", "Full-stack developer and independent product builder"],
+    ["/", "Senior full-stack engineer and independent product builder"],
     ["/about-me", "About Me"],
     ["/projects", "Projects"],
     ["/cv", "Curriculum Vitae"],
@@ -129,7 +129,9 @@ describe("App", () => {
   it("renders the current employment content", () => {
     renderRoute("/cv");
 
-    expect(screen.getByRole("heading", { name: /Oracle.*Software Engineer/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Oracle — Senior Software Developer (IC3)" })
+    ).toBeInTheDocument();
   });
 
   it.each(["/about-me", "/cv"])("renders the current padel ambassadorship on %s", (route) => {
@@ -220,12 +222,12 @@ describe("App", () => {
   });
 
   it.each([
-    ["/", /backend, web, and mobile—from/],
+    ["/", /backend, web and mobile—from/],
     ["/", /Whether it’s for work, collaboration/],
     ["/about-me", /football—the group I manage/],
     ["/about-me", /and I’m an ambassador/],
-    ["/cv", "Oracle — Software Engineer"],
-    ["/cv", "April 2020 – Present"],
+    ["/cv", "Oracle — Senior Software Developer (IC3)"],
+    ["/cv", "April 2020 – June 2026"],
   ])("renders UTF-8 punctuation correctly on %s", (route, expectedText) => {
     renderRoute(route);
 
