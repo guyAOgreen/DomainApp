@@ -53,11 +53,81 @@ The site will be available at [http://localhost:5173](http://localhost:5173).
 | --- | --- |
 | `yarn dev` | Run the Vite development server. |
 | `yarn test` | Run the Vitest suite once. |
+| `yarn test:coverage` | Run the suite with V8 coverage reports and minimum coverage checks. |
 | `yarn test:watch` | Run Vitest in watch mode. |
 | `yarn build` | Type-check and create an optimized production build in `dist/`. |
 | `yarn preview` | Preview the production build locally. |
 | `yarn prettify` | Check the repository's Prettier formatting. |
 | `yarn prettify:fix` | Apply Prettier formatting. |
+
+## Test coverage
+
+Run `yarn test:coverage` locally. The console shows coverage by file and a total summary.
+Open `coverage/index.html` for highlighted uncovered lines and branches; machine-readable
+results are in `coverage/coverage-summary.json` and `coverage/coverage-final.json`.
+These generated reports are ignored by Git, Prettier, and ESLint.
+
+The pull-request and main-branch CI job runs this command instead of `yarn test`, so it runs
+the suite once. Failed tests or coverage below any minimum fail the job. The `coverage-report`
+artifact contains the HTML and JSON reports and is retained for 14 days, including when tests
+or thresholds fail, provided report generation completes and the run is not cancelled.
+Download and extract it, then open `index.html`. The separate manual production deployment
+workflow retains its existing verification command, including support for older main commits.
+
+### Initial baseline and thresholds
+
+Measured on 9 September 2026 using Node.js 22.23.1, Vitest/V8 provider 4.1.11, and the existing
+155 tests at application commit `e826495`:
+
+| Metric | Initial coverage | Covered / total | Minimum |
+| --- | --- | --- | --- |
+| Lines | 97.95% | 239 / 244 | 90% |
+| Statements | 98.03% | 250 / 255 | 90% |
+| Functions | 100% | 89 / 89 | 90% |
+| Branches | 94.67% | 160 / 169 | 85% |
+
+The global minimums in `vite.config.ts` leave roughly 8–10 percentage points below the measured
+baseline. For a personal portfolio, this provides a useful coverage floor while allowing sensible
+changes without encouraging low-value tests to preserve near-perfect scores. Branch coverage has
+a lower minimum to allow room for defensive and less common paths. Actual coverage remains
+visible in every report and meaningful gaps still need review. This is a minimum gate, not an
+exact comparison with the previous commit; reductions above a minimum can pass. There are no
+per-file or changed-line gates.
+
+The initial uncovered-code review found:
+
+- `src/index.tsx` has two uncovered React startup statements. It stays included at 0%; the
+  component tests render `App` directly and do not exercise browser startup.
+- Image and chess galleries test forward navigation and wrapping back from the first item,
+  but not stepping back from a later item. Those are useful behaviour-test follow-ups.
+- Remaining gaps are empty-gallery guards, the unused `imageFit="cover"` option, the fallback
+  page title, an invalid chess-tab fallback, and a null-ref guard for the CV preview.
+- Gallery loading, validation, retry, timeout, cancellation, and the tested page loading/error
+  states are already exercised. No production code is excluded to conceal the remaining gaps,
+  and no tests were added solely to increase these percentages.
+
+Coverage includes every `src/**/*.{ts,tsx}` file, even if no test imports it. Exclusions are
+test files (`*.test.*`, `*.spec.*`, and `__tests__`), `src/setupTests.ts`, the `src/testUtils`
+helpers/fixtures, `__fixtures__` directories, TypeScript declarations, and generated code named
+`*.generated.ts`/`*.generated.tsx` or stored in `__generated__`. There are currently no generated
+production TypeScript files; use these naming conventions only for actual generated output.
+Assets and styles are outside the TypeScript include pattern. There are no other exclusions.
+
+When changing code, inspect the HTML report and test meaningful user behaviour, especially
+uncovered state transitions and error paths. Revisit thresholds when the project's needs change;
+do not add implementation-detail or prose-matching tests just to raise the score. Any threshold
+reduction or expanded exclusion must have a stated reason in the PR. Keep `vitest` and
+`@vitest/coverage-v8` pinned to matching versions and recheck coverage when upgrading them or Node.
+See the [Vitest 4 coverage configuration](https://v4.vitest.dev/config/coverage).
+
+To check that the gate rejects insufficient coverage without changing the saved thresholds:
+
+```bash
+yarn test:coverage --coverage.thresholds.lines=100
+```
+
+With the baseline above, this command must exit nonzero after reporting line coverage below
+100%, while still writing the reports. Run `yarn test:coverage` again for the normal passing run.
 
 ## Project structure
 
