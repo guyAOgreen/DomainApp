@@ -55,7 +55,7 @@ describe("HomePage", () => {
     expect(screen.getByRole("heading", { name: "Full-stack delivery" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Industry experience" })).toBeInTheDocument();
     expect(screen.getByText(/^At ACI Worldwide,/i)).toHaveTextContent(
-      /At ACI Worldwide, I built payment-device and upstream integrations as an Associate Software Engineer/i
+      /Associate Software Engineer/i
     );
     expect(screen.getByText(/At Oracle,/i)).toHaveTextContent(
       /At Oracle, I progressed to Senior Software Developer \(IC3\)/i

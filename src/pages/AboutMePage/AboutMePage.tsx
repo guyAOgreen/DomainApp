@@ -42,9 +42,10 @@ const AboutMePage: React.FC = () => {
               Science from UCT.
             </p>
             <p>
-              At ACI Worldwide, I was an Associate Software Engineer working on payment-device and
-              upstream integrations. At Oracle, I progressed from Software Developer (IC2) to Senior
-              Software Developer (IC3), working across cloud services until June 2026. My{" "}
+              At ACI Worldwide, I was an Associate Software Engineer. I worked on software that
+              processed payments from point-of-sale systems to upstream systems. At Oracle, I
+              progressed from Software Developer (IC2) to Senior Software Developer (IC3), working
+              across cloud services until June 2026. My{" "}
               <Link
                 to={appRoutes.cv}
                 className="font-semibold text-blue-700 underline dark:text-blue-300"

@@ -33,9 +33,7 @@ describe("AboutMePage", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Software and product" })).toBeInTheDocument();
-    expect(screen.getByText(/At ACI Worldwide/i)).toHaveTextContent(
-      /At ACI Worldwide, I was an Associate Software Engineer working on payment-device and upstream integrations/i
-    );
+    expect(screen.getByText(/At ACI Worldwide/i)).toHaveTextContent(/Associate Software Engineer/i);
     expect(screen.getByText(/At Oracle/i)).toHaveTextContent(
       /At Oracle, I progressed from Software Developer \(IC2\) to Senior Software Developer \(IC3\)/i
     );

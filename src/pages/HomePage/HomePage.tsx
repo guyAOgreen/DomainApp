@@ -104,10 +104,10 @@ const HomePage: React.FC = () => {
             <article className="rounded-xl bg-gray-100 p-6 shadow dark:bg-gray-700">
               <h3 className="mb-3 text-2xl font-semibold">Industry experience</h3>
               <p>
-                At ACI Worldwide, I built payment-device and upstream integrations as an Associate
-                Software Engineer. At Oracle, I progressed to Senior Software Developer (IC3),
-                delivering cloud features, reviewing code, mentoring engineers and supporting
-                production services.
+                At ACI Worldwide, I was an Associate Software Engineer. I worked on software that
+                processed payments from point-of-sale systems to upstream systems. At Oracle, I
+                progressed to Senior Software Developer (IC3), delivering cloud features, reviewing
+                code, mentoring engineers and supporting production services.
               </p>
             </article>
           </div>
