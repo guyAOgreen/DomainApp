@@ -28,11 +28,15 @@ const RecentGamesContent: React.FC<RecentGamesContentProps> = ({ gameIds }) => {
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">My Recent Online Games</h2>
 
       <div className="mx-auto w-full max-w-3xl">
-        <div className="overflow-hidden rounded-lg border border-gray-200 shadow-lg dark:border-gray-700">
+        <div className="@container overflow-hidden rounded-lg border border-gray-200 shadow-lg dark:border-gray-700">
+          {/* Match Lichess's 450px embed breakpoint using the frame width, not the viewport.
+              Narrow: board + 168px for players, controls, and moves (14 × 12px).
+              Wide: reserve a 232px move list, then add 96px for players and controls.
+              Lichess fits the board into the remaining height as its text scales. */}
           <iframe
             key={currentGame}
             src={embeddedLichessUrl(currentGame)}
-            className="h-[80vh] min-h-80 w-full border-0"
+            className="block h-[calc(100cqw+168px)] w-full border-0 @[451px]:h-[calc(100cqw-136px)]"
             allowFullScreen
             title={`Lichess game ${currentGameNumber}`}
           />

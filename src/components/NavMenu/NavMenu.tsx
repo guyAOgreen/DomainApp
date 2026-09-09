@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
-import catGif from "../../assets/gifs/cat.gif";
 import { appRoutes } from "../../constants/routeConstants";
 
 const navItems = [
@@ -17,18 +16,13 @@ const NavMenu = () => {
 
   return (
     <>
-      <img
-        src={catGif}
-        alt=""
-        className="hidden h-14 w-14 rounded-full border-4 border-white dark:border-gray-900 motion-safe:lg:block"
-      />
       <button
         type="button"
         aria-controls="primary-navigation"
         aria-expanded={isOpen}
         aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
         onClick={() => setIsOpen((open) => !open)}
-        className="rounded-lg border border-gray-600 p-3 text-xl transition hover:bg-gray-700 dark:border-gray-300 dark:hover:bg-gray-200 md:hidden"
+        className="rounded-lg border border-gray-600 p-3 text-xl transition hover:bg-gray-800 md:hidden"
       >
         {isOpen ? <FaTimes aria-hidden="true" /> : <FaBars aria-hidden="true" />}
       </button>
@@ -45,9 +39,9 @@ const NavMenu = () => {
                 end={to === appRoutes.home}
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
-                  `block rounded-md px-3 py-2 transition hover:bg-gray-700 hover:text-blue-300 dark:hover:bg-gray-200 dark:hover:text-blue-700 ${
+                  `block rounded-md px-3 py-2 transition hover:bg-gray-800 hover:text-blue-300 ${
                     isActive
-                      ? "bg-gray-800 text-blue-300 underline decoration-2 underline-offset-4 dark:bg-gray-100 dark:text-blue-700"
+                      ? "bg-gray-800 text-blue-300 underline decoration-2 underline-offset-4"
                       : ""
                   }`
                 }

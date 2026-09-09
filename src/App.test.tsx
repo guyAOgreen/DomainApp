@@ -43,10 +43,10 @@ describe("App", () => {
     ).toBeInTheDocument();
   });
 
-  it("does not announce the decorative navigation image", () => {
+  it("keeps only the decorative portrait in the header without announcing it", () => {
     const { container } = renderRoute("/");
 
-    expect(container.querySelectorAll("header img")).toHaveLength(2);
+    expect(container.querySelectorAll("header img")).toHaveLength(1);
     expect(screen.queryAllByRole("img")).toHaveLength(0);
     expect(container.querySelector("header img")).toHaveAttribute(
       "src",

@@ -43,9 +43,11 @@ const AppContent: React.FC = () => {
       >
         Skip to main content
       </a>
-      <header className="flex flex-wrap items-center justify-between gap-3 bg-gray-900 p-4 text-white shadow-lg dark:bg-gray-50 dark:text-gray-900">
-        <NameComponent />
-        <NavMenu />
+      <header className="border-b border-gray-800 bg-gray-900 px-6 py-4 text-white dark:bg-gray-950">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
+          <NameComponent />
+          <NavMenu />
+        </div>
       </header>
 
       <p role="status" className="sr-only">
@@ -66,9 +68,9 @@ const AppContent: React.FC = () => {
           <Route path={appRoutes.chess} element={<ChessPage />} />
         </Routes>
       </main>
-      <footer className="bg-gray-900 dark:bg-gray-50 text-white dark:text-gray-900 p-4 mt-8">
-        <div className="container mx-auto text-center">
-          <p className="mb-2">© {new Date().getFullYear()} Guy Green</p>
+      <footer className="border-t border-gray-800 bg-gray-900 px-6 py-8 text-gray-300 dark:bg-gray-950">
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 text-sm sm:flex-row">
+          <p>© {new Date().getFullYear()} Guy Green</p>
           <div className="flex justify-center space-x-4">
             <SocialLinks />
           </div>
