@@ -1,0 +1,24 @@
+name: Maintenance request
+description: Plan documentation, tooling, dependency, or infrastructure work.
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What needs maintenance, and why does it matter?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What should change, and what would count as done?
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: What should this work leave out? Write "None" if there are no exclusions.
+    validations:
+      required: true
