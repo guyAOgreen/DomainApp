@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose an improvement with a clear scope.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem should this solve, and why does it matter?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What should change, and what would count as done?
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: What should this work leave out? Write "None" if there are no exclusions.
+    validations:
+      required: true
