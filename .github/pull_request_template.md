@@ -3,7 +3,8 @@
 Closes #N
 
 - [ ] Linked the issue above.
-- [ ] `yarn prettify`, `yarn lint`, `yarn test`, and `yarn build` pass.
+- [ ] `yarn prettify`, `yarn lint`, `yarn test:ci`, `yarn test:coverage`, `yarn test:e2e`, and
+      `yarn build` pass.
 - [ ] No secrets or credentials committed.
 - [ ] Deployment or infrastructure impact noted below, or marked "None".
 
